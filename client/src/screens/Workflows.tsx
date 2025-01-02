@@ -206,15 +206,15 @@ export default function Workflows() {
     <div className="p-6 dark:bg-neutral-800 min-h-full">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-bold">Zaps</h1>
+          <h1 className="text-2xl font-bold">Workflows</h1>
           <Tabs defaultValue="zaps">
-            <TabsList className={purpleTheme.border}>
+            {/* <TabsList className={purpleTheme.border}>
               <TabsTrigger
                 value="zaps"
                 className={cn("flex items-center gap-2", purpleTheme.secondary)}
               >
                 <Lightning className="h-4 w-4" />
-                Zaps
+                Jobs
               </TabsTrigger>
               <TabsTrigger
                 value="folders"
@@ -223,9 +223,9 @@ export default function Workflows() {
                 <Folder className="h-4 w-4" />
                 Folders
               </TabsTrigger>
-            </TabsList>
+            </TabsList> */}
           </Tabs>
-          <DropdownMenu>
+          {/* <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" className={purpleTheme.secondary}>
                 All
@@ -236,10 +236,13 @@ export default function Workflows() {
               <DropdownMenuItem>My Zaps</DropdownMenuItem>
               <DropdownMenuItem>Shared Zaps</DropdownMenuItem>
             </DropdownMenuContent>
-          </DropdownMenu>
+          </DropdownMenu> */}
           <Button
             variant="outline"
-            className={cn("flex items-center gap-2", purpleTheme.secondary)}
+            className={cn(
+              "flex items-center gap-2 dark:bg-purple-800 dark:text-white",
+              purpleTheme.secondary
+            )}
           >
             <Filter className="h-4 w-4" />
             Filters
@@ -250,7 +253,10 @@ export default function Workflows() {
             <Trash2 className="h-5 w-5" />
           </Button>
           <Button
-            className={cn("flex items-center gap-2", purpleTheme.primary)}
+            className={cn(
+              "flex items-center gap-2 dark:bg-purple-800 dark:text-white",
+              purpleTheme.primary
+            )}
             onClick={handleCreateNewWorkflow}
           >
             <Plus className="h-4 w-4" />
@@ -261,7 +267,10 @@ export default function Workflows() {
       <div className="flex items-center space-x-4 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search by name or webhook" className="pl-8" />
+          <Input
+            placeholder="Search by name"
+            className="pl-8 dark:border-neutral-500"
+          />
         </div>
       </div>
       <Table>

@@ -22,8 +22,8 @@ import {
 import { Separator } from "./ui/separator";
 import { Button } from "./ui/button";
 import { useUser } from "@/providers/user-provider";
-import { Toggle } from "./ui/toggle";
 import { ModeToggle } from "./mode-toggle";
+import { NavUser } from "./nav-user";
 
 // Menu items.
 const items = [
@@ -33,7 +33,7 @@ const items = [
     icon: Home,
   },
   {
-    title: "My Wrokflows",
+    title: "My Workflows",
     url: "/workflow",
     icon: Workflow,
   },
@@ -59,7 +59,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar>
-      <SidebarContent className="bg-background border-none">
+      <SidebarContent className="border-none">
         <SidebarGroup>
           <SidebarGroupLabel className="flex items-center justify-between px-2 py-4 mb-4">
             <span className="text-lg text-neutral-800 dark:text-neutral-100 font-bold">
@@ -84,8 +84,8 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="">
-        {isAuthenticated ? (
-          <h1>loggedin</h1>
+        {isAuthenticated && user ? (
+          <NavUser user={user} />
         ) : (
           <>
             <Separator />
