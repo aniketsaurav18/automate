@@ -1,8 +1,12 @@
 package main
 
 import (
-	httpexecutor "executor/apps/http"
+	"executor/apps/http"
 )
+
+p := HttpJob{
+	Key: 
+}
 
 
 func main() {

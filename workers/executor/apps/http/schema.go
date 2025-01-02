@@ -1,4 +1,4 @@
-package httpexecutor
+package http
 
 type HttpJob struct {
 	Key     string        `json:"key"` // Should always be "http"
