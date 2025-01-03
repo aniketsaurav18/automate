@@ -1,14 +1,6 @@
 {
   "name": "Automate",
-  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
-  "features": {
-    "ghcr.io/devcontainers/features/go:1": {
-      "version": "lts"
-    },
-    "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
-    }
-  },
+  "image": "mcr.microsoft.com/vscode/devcontainers/universal:linux",
   "postCreateCommand": "npm install -g typescript",
   "extensions": [
     "Prisma.prisma",
