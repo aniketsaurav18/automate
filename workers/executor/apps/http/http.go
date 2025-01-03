@@ -10,81 +10,25 @@ import (
 
 var HttpClient = &http.Client{}
 
-func PostRequestHandler(h *HttpJob) {
-	post_body := []byte(h.Input.Body)
-	req_url := h.Input.URL
+// Handle requests that require a body (POST, PUT, PATCH, etc.)
+func HttpRequestWithBody(h *HttpJob) {
+	var body *bytes.Buffer
 
-	// Create a new HTTP request
-	req, err := http.NewRequest(h.Input.Method, req_url, bytes.NewBuffer(post_body))
-	if err != nil {
-		fmt.Println("Error while making post request")
-		return
-	}
-
-	// Add parameters to the URL if any
-	if len(h.Input.Parameters) != 0 {
-		q := req.URL.Query()
-		for key, val := range h.Input.Parameters {
-			q.Add(key, val)
-		}
-		req.URL.RawQuery = q.Encode()
-	}
-
-	// Set headers
-	if len(h.Input.Headers) != 0 {
-		for key, val := range h.Input.Headers {
-			req.Header.Set(key, val)
-		}
-	}
-
-	// Create an HTTP client and execute the request
-	client := &http.Client{}
-	res, err := client.Do(req)
-	var result = &HttpJobOutput{}
-	if err != nil {
-		fmt.Println("Error while making request")
-		fmt.Println(err)
+	// If the body is provided, create a buffer with the body content
+	if h.Input.Body != "" {
+		body = bytes.NewBuffer([]byte(h.Input.Body))
 	} else {
-		result.StatusCode = res.StatusCode
-		result.Headers = res.Header
-
-		// Read the response body
-		res_body, err := io.ReadAll(res.Body)
-		if err != nil {
-			fmt.Println("Error while reading the body")
-			result.Body = "Error while reading the body"
-		} else {
-			result.Body = string(res_body)
-		}
+		// For POST, PUT, PATCH, an empty buffer can be used if body is not provided.
+		body = &bytes.Buffer{}
 	}
 
-	fmt.Println("Response Status Code")
-	fmt.Println(result.StatusCode)
-	fmt.Println("Response Headers")
-	err = nil
-	formatted_headers, err := json.MarshalIndent(result.Headers, "", "  ")
+	req, err := http.NewRequest(h.Input.Method, h.Input.URL, body)
 	if err != nil {
-		fmt.Println("error while marshaling the response headers")
-	}
-	fmt.Println(string(formatted_headers))
-	fmt.Println("Response Body:")
-	fmt.Println(result.Body)
-}
-
-func GetRequestHandler(h *HttpJob) {
-	if h.Key != "http" || h.Input.Method != "GET" {
-		return
-	}
-	req_url := h.Input.URL
-
-	// Create a new HTTP request
-	req, err := http.NewRequest(h.Input.Method, req_url, nil)
-	if err != nil {
-		fmt.Println("Error while making get request")
+		fmt.Println("Error creating HTTP request with body:", err)
 		return
 	}
 
-	// Add parameters to the URL if any
+	// Add query parameters to the URL if present
 	if len(h.Input.Parameters) != 0 {
 		q := req.URL.Query()
 		for key, val := range h.Input.Parameters {
@@ -93,7 +37,7 @@ func GetRequestHandler(h *HttpJob) {
 		req.URL.RawQuery = q.Encode()
 	}
 
-	// Set headers if any
+	// Set headers if present
 	if len(h.Input.Headers) != 0 {
 		for key, val := range h.Input.Headers {
 			req.Header.Set(key, val)
@@ -102,45 +46,88 @@ func GetRequestHandler(h *HttpJob) {
 
 	res, err := HttpClient.Do(req)
 	if err != nil {
-		fmt.Println("Error while doing get request")
+		fmt.Println("Error executing HTTP request:", err)
+		return
+	}
+	defer res.Body.Close()
+
+	processResponse(res)
+}
+
+// Handle requests that do not require a body (GET, DELETE, etc.)
+func HttpRequestWithoutBody(h *HttpJob) {
+	req, err := http.NewRequest(h.Input.Method, h.Input.URL, nil)
+	if err != nil {
+		fmt.Println("Error creating HTTP request without body:", err)
+		return
 	}
 
-	var result = &HttpJobOutput{}
-	if err != nil {
-		fmt.Println("Error while making request")
-		fmt.Println(err)
-	} else {
-		result.StatusCode = res.StatusCode
-		result.Headers = res.Header
+	// Add query parameters to the URL if present
+	if len(h.Input.Parameters) != 0 {
+		q := req.URL.Query()
+		for key, val := range h.Input.Parameters {
+			q.Add(key, val)
+		}
+		req.URL.RawQuery = q.Encode()
+	}
 
-		// Read the response body
-		res_body, err := io.ReadAll(res.Body)
-		if err != nil {
-			fmt.Println("Error while reading the body")
-			result.Body = "Error while reading the body"
-		} else {
-			result.Body = string(res_body)
+	// Set headers if present
+	if len(h.Input.Headers) != 0 {
+		for key, val := range h.Input.Headers {
+			req.Header.Set(key, val)
 		}
 	}
-	fmt.Println("Response Status Code")
-	fmt.Println(result.StatusCode)
-	fmt.Println("Response Headers")
-	err = nil
-	formatted_headers, err := json.MarshalIndent(result.Headers, "", "  ")
+
+	res, err := HttpClient.Do(req)
 	if err != nil {
-		fmt.Println("error while marshaling the response headers")
+		fmt.Println("Error executing HTTP request:", err)
+		return
 	}
-	fmt.Println(string(formatted_headers))
-	fmt.Println("Response Body:")
-	fmt.Println(result.Body)
+	defer res.Body.Close()
+
+	processResponse(res)
+}
+
+// Process the response for both methods
+func processResponse(res *http.Response) {
+	var result = &HttpJobOutput{
+		StatusCode: res.StatusCode,
+		Headers:    res.Header,
+	}
+
+	resBody, err := io.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println("Error reading response body:", err)
+		result.Body = "Error reading response body"
+	} else {
+		result.Body = string(resBody)
+	}
+
+	fmt.Println("Response Status Code:", result.StatusCode)
+	fmt.Println("Response Headers:")
+	formattedHeaders, err := json.MarshalIndent(result.Headers, "", "  ")
+	if err != nil {
+		fmt.Println("Error marshaling response headers:", err)
+	} else {
+		fmt.Println(string(formattedHeaders))
+	}
+	fmt.Println("Response Body:", result.Body)
 }
 
 func ExecuteHttpJob(h *HttpJob) {
-	if h.Input.Method == "GET" {
-		GetRequestHandler(h)
-	} else if h.Input.Method == "POST" {
-		PostRequestHandler(h)
-	} else {
-		fmt.Println("Unrecognised method.")
+	if h.Key != "http" {
+		fmt.Println("Invalid job key")
+		return
+	}
+	if h.Input.Method == "" {
+		fmt.Println("HTTP method not specified")
+		return
+	}
+
+	switch h.Input.Method {
+	case "GET", "DELETE":
+		HttpRequestWithoutBody(h) // No body for GET or DELETE
+	default:
+		HttpRequestWithBody(h) // Requires body (POST, PUT, PATCH, etc.)
 	}
 }

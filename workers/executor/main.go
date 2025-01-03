@@ -30,7 +30,9 @@ func main() {
 			Parameters: map[string]string{
 				"postId": "1",
 			},
+			Body: "",
 		},
 	}
+
 	http.ExecuteHttpJob(&job2)
 }
