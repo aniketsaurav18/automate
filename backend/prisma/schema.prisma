@@ -36,18 +36,18 @@ model IdentityProvider {
 }
 
 model Workflow {
-    id          String   @id @unique @default(cuid())
-    name        String   @default("Untitled Workflow")
-    description String?
-    owner_id    String
-    job_count   Int      @default(0)
-    active      Boolean  @default(false)
-    apps        Apps[]   @default([])
-    next_execution     DateTime? 
-    created_at  DateTime @default(now())
-    updated_at  DateTime @updatedAt
-    owner       User     @relation(fields: [owner_id], references: [id])
-    jobs        Job[]
+    id             String    @id @unique @default(cuid())
+    name           String    @default("Untitled Workflow")
+    description    String?
+    owner_id       String
+    job_count      Int       @default(0)
+    active         Boolean   @default(false)
+    apps           Apps[]    @default([])
+    next_execution DateTime?
+    created_at     DateTime  @default(now())
+    updated_at     DateTime  @updatedAt
+    owner          User      @relation(fields: [owner_id], references: [id])
+    jobs           Job[]
 }
 
 model Job {
@@ -65,15 +65,15 @@ model Job {
 }
 
 model Execution {
-    id String @id @unique @default(uuid())
-    workflow_id String 
-    execution_time DateTime //when this execution should start
-    results Json[] @default([])
+    id                 String          @id @unique @default(uuid())
+    workflow_id        String
+    execution_time     DateTime //when this execution should start
+    results            Json[]          @default([])
     total_job_executed Int
-    status ExecutionStatus
-    job_index Int // will point to the index of job that is going to be executed.
-    created_at DateTime @default(now())
-    finished_at DateTime?
+    status             ExecutionStatus
+    job_index          Int // will point to the index of job that is going to be executed.
+    created_at         DateTime        @default(now())
+    finished_at        DateTime?
 }
 
 enum ExecutionStatus {
