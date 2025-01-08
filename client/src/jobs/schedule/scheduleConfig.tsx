@@ -46,9 +46,7 @@ export const ScheduleConfig = forwardRef(
         const parsedDate = parseISO(data.fixedTime?.dateTime);
         setDate(parsedDate);
         setTime(format(parsedDate, "HH:mm"));
-        const timeZoneMatch =
-          data.fixedTime.dateTime.match(/([+-]\d{2}:\d{2}|Z)$/);
-        setTimezone(timeZoneMatch?.[0] || "UTC");
+        setTimezone(data.fixedTime?.timeZoneOffset || "UTC");
       } else if (data.type === "interval" && data.interval) {
         setIntervalType(data.interval.unit);
         setIntervalAmount(data.interval.value);
@@ -65,13 +63,13 @@ export const ScheduleConfig = forwardRef(
       if (isDateTimeMode && date) {
         const [hours, minutes] = time.split(":").map(Number);
         const updatedDate = set(date, { hours, minutes });
-        const isoWithTimezone = `${
-          updatedDate.toISOString().split("Z")[0]
-        }${timezone}`;
         const ScheduleJob = {
           key: "schedule",
           type: "fixed",
-          fixedTime: { dateTime: isoWithTimezone },
+          fixedTime: {
+            dateTime: updatedDate.toISOString(),
+            timeZoneOffset: timezone,
+          },
         } as ScheduleJobDataType;
         return ScheduleJob;
       } else {

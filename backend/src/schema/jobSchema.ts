@@ -49,6 +49,11 @@ const FixedTimeSchema = z.object({
   dateTime: z.string().refine((val) => !isNaN(Date.parse(val)), {
     message: "Invalid date-time format",
   }),
+  timeZoneOffset: z
+    .string()
+    .refine((val) => /^[+-](0[0-9]|1[0-4]):[0-5][0-9]$/.test(val), {
+      message: "Invalid time zone offset format",
+    }),
 });
 
 const IntervalSchema = z.object({

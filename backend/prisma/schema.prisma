@@ -44,10 +44,40 @@ model Workflow {
     active         Boolean   @default(false)
     apps           Apps[]    @default([])
     next_execution DateTime?
+    trigger_id     String
+    trigger        Trigger?
     created_at     DateTime  @default(now())
     updated_at     DateTime  @updatedAt
     owner          User      @relation(fields: [owner_id], references: [id])
     jobs           Job[]
+}
+
+model Trigger {
+    id            String        @id @unique @default(cuid())
+    created_at    DateTime      @default(now())
+    updated_at    DateTime      @updatedAt
+    workflow_id   String        @unique
+    workflow      Workflow      @relation(fields: [workflow_id], references: [id])
+    type          TriggerType
+    interval_unit Int?
+    interval_type IntervalType?
+    fixed_time    DateTime?
+    timezone      String?
+    webhook       Boolean?
+}
+
+enum IntervalType {
+    min
+    hour
+    day
+    week
+    month
+}
+
+enum TriggerType {
+    fixed
+    interval
+    webhook
 }
 
 model Job {
