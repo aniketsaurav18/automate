@@ -8,6 +8,8 @@ import {
 } from "./schema";
 import { z } from "zod";
 import { WorkflowResponseType } from "../../types";
+import { HandleScheduleNextExecution } from "../../utils/schedule-execution";
+import { createTriggerforWorkflow } from "./helper";
 
 // Controller function for creating a new workflow
 export const createNewWorkflowController = async (
@@ -51,7 +53,7 @@ export const createNewWorkflowController = async (
 /*
  *
  * batch job save inside a workflow.
- *
+ * POST /workflow/:id
  */
 export const createWorkflowController = async (
   req: Request,
@@ -97,7 +99,8 @@ export const createWorkflowController = async (
           })),
         });
       }
-
+      
+      await createTriggerforWorkflow(jobs[0], prisma)
       // Return the updated workflow with jobs
       return prisma.workflow.findFirst({
         where: { id: id, owner_id: userId },
@@ -135,7 +138,11 @@ export const createWorkflowController = async (
   }
 };
 
-// "/all"
+
+/*
+* Get all workflows without the job data.
+* GET /all
+*/
 export const getAllWorkflowDataController = async (
   req: Request,
   res: Response
@@ -143,8 +150,6 @@ export const getAllWorkflowDataController = async (
   try {
     const userId = req.user?.id;
     const query = req.query;
-    console.log("/all");
-    console.log("userId::all", userId);
     if (!userId) {
       res.status(403).json({ message: "Unauthorized request", success: false });
       return;
@@ -181,6 +186,7 @@ export const getAllWorkflowDataController = async (
       success: true,
       data: safeParseData,
     });
+    
     return;
   } catch (err: any) {
     console.error("Error fetching workflows:", err.message || err);

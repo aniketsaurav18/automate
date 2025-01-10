@@ -44,7 +44,7 @@ model Workflow {
     active         Boolean   @default(false)
     apps           Apps[]    @default([])
     next_execution DateTime?
-    trigger_id     String
+    trigger_id     String?
     trigger        Trigger?
     created_at     DateTime  @default(now())
     updated_at     DateTime  @updatedAt
