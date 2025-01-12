@@ -9,12 +9,12 @@ import {
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+// import {
+//   DropdownMenu,
+//   DropdownMenuContent,
+//   DropdownMenuItem,
+//   DropdownMenuTrigger,
+// } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -109,7 +109,7 @@ export default function Workflows() {
       const data = await res.json();
       console.log(data);
       if (data.success) {
-        navigate(`${data.workflowData.id}?mode=create`);
+        navigate(`${data.data.id}?mode=create`);
       }
     } catch (err: any) {
       console.log(err);

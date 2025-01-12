@@ -88,7 +88,7 @@ export function WorkflowCanvas() {
     try {
       setSaveLoading(true);
       const res = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/workflow/create`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/workflow/${workflowId}`,
         {
           method: "POST",
           headers: {

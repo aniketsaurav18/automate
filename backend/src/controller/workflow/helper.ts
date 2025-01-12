@@ -69,11 +69,11 @@ export const createTriggerForWorkflow = async (
 ) => {
   const triggerJob = await prisma.job.findFirst({
     where: {
-      id: job.id,
+      workflow_id: job.workflow_id,
       step_no: 1,
     },
   });
-
+  console.log("triggerJob", triggerJob);
   if (!triggerJob) {
     throw new Error("Trigger job not found.");
   }

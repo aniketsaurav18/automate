@@ -6,7 +6,7 @@ import {
   WorkflowCreateSchema,
   WorkflowResponseSchema,
 } from "./schema";
-import { z } from "zod";
+import { object, z } from "zod";
 import { WorkflowResponseType } from "../../types";
 import { HandleScheduleNextExecution } from "../../utils/schedule-execution";
 import { createTriggerForWorkflow } from "./helper";
@@ -91,16 +91,25 @@ export const createWorkflowController = async (
       }
 
       // Create new jobs associated with the workflow
+      console.log("Jobs createworkflowcontroller:", jobs);
       if (jobs) {
         await prisma.job.createMany({
-          data: jobs.map((job: JobCreateDataType) => ({
+          data: jobs.map(({ id, ...job }: JobCreateDataType) => ({
             ...job,
             workflow_id: dbWorkflow.id,
           })),
         });
+
+        // const createdJobs = await prisma.job.findMany({
+        //   where: {
+        //     workflow_id: dbWorkflow.id,
+        //   },
+        // });
+        // console.log("created Job", createdJobs);
+        // for every workflow a trigger has to be created.
+        await createTriggerForWorkflow(jobs[0], prisma);
       }
-      // for every workflow a trigger has to be created.
-      await createTriggerForWorkflow(jobs[0], prisma);
+
       // Return the updated workflow with jobs
       return prisma.workflow.findFirst({
         where: { id: id, owner_id: userId },
