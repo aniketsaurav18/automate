@@ -57,7 +57,7 @@ const FixedTimeSchema = z.object({
 });
 
 const IntervalSchema = z.object({
-  unit: z.enum(["minute", "hour", "day", "week", "month"]),
+  unit: z.enum(["min", "hour", "day", "week", "month"]),
   value: z.number().int().positive(),
 });
 

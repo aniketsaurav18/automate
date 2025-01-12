@@ -1,32 +1,88 @@
+import { BaseScheduleSchema } from "../../schema";
 import { JobCreateDataType } from "./schema";
-import { Prisma } from "@prisma/client";
+import { IntervalType, Job, Prisma } from "@prisma/client";
 
-const handleWebhookTriggerCreation = (prisma: Prisma.TransactionClient) => {
-    try{
-        await prisma.trigger.create({
-            data: {
-                trigger_type: "webhook",
-                
-            }
-        })
-    }
-}
+const handleWebhookTriggerCreation = async (
+  workflowId: string,
+  prisma: Prisma.TransactionClient
+) => {
+  await prisma.trigger.upsert({
+    where: {
+      workflow_id: workflowId,
+    },
+    create: {
+      type: "webhook",
+      workflow_id: workflowId,
+    },
+    update: {
+      type: "webhook",
+      workflow_id: workflowId,
+    },
+  });
+};
 
-export const createTriggerforWorkflow = async (job: JobCreateDataType, prisma: Prisma.TransactionClient) => {
-    try{
-        const triggerJob = await prisma.job.findFirst({
-            where: {
-                id: job.id,
-                step_no: 1
-            }
-        })
-        if(triggerJob?.app !== "webhook" && triggerJob?.app !== "schedule"){
-            throw new Error("Trigger not found.")
-        }
-        if(triggerJob.app == "webhook"){
+const handleScheduledTriggerCreating = async (
+  job: Job,
+  prisma: Prisma.TransactionClient
+) => {
+  const scheduleData = BaseScheduleSchema.safeParse(job.data);
 
-        }
-    }catch(e){  
-        console.log(e);
-    }
-}
+  if (!scheduleData.success) {
+    throw new Error("Invalid schedule data");
+  }
+
+  const { type, fixedTime, interval } = scheduleData.data;
+
+  if (type === "fixed") {
+    await prisma.trigger.create({
+      data: {
+        type: "fixed",
+        fixed_time: fixedTime?.dateTime,
+        timezone: fixedTime?.timeZoneOffset,
+        workflow_id: job.workflow_id,
+      },
+    });
+  } else if (type === "interval") {
+    await prisma.trigger.upsert({
+      where: {
+        workflow_id: job.workflow_id,
+      },
+      create: {
+        type: "interval",
+        workflow_id: job.workflow_id,
+        interval_type: interval?.unit as IntervalType,
+        interval_unit: interval?.value,
+      },
+      update: {
+        type: "interval",
+        workflow_id: job.workflow_id,
+        interval_type: interval?.unit as IntervalType,
+        interval_unit: interval?.value,
+      },
+    });
+  }
+};
+
+export const createTriggerForWorkflow = async (
+  job: JobCreateDataType,
+  prisma: Prisma.TransactionClient
+) => {
+  const triggerJob = await prisma.job.findFirst({
+    where: {
+      id: job.id,
+      step_no: 1,
+    },
+  });
+
+  if (!triggerJob) {
+    throw new Error("Trigger job not found.");
+  }
+
+  if (triggerJob.app === "webhook") {
+    await handleWebhookTriggerCreation(triggerJob.workflow_id, prisma);
+  } else if (triggerJob.app === "schedule") {
+    await handleScheduledTriggerCreating(triggerJob, prisma);
+  } else {
+    throw new Error("Unsupported trigger type");
+  }
+};

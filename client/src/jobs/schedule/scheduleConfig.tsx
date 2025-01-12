@@ -34,8 +34,8 @@ export const ScheduleConfig = forwardRef(
     const [time, setTime] = useState<string>("12:00");
     const [timezone, setTimezone] = useState<string>("Z");
     const [intervalType, setIntervalType] = useState<
-      "minute" | "hour" | "day" | "week" | "month"
-    >("minute");
+      "min" | "hour" | "day" | "week" | "month"
+    >("min");
     const [intervalAmount, setIntervalAmount] = useState<number>(10);
 
     // Parse the ISO string on load
@@ -174,7 +174,7 @@ export const ScheduleConfig = forwardRef(
                 value={intervalType}
                 onValueChange={(value) =>
                   setIntervalType(
-                    value as "minute" | "hour" | "day" | "week" | "month"
+                    value as "min" | "hour" | "day" | "week" | "month"
                   )
                 }
               >
