@@ -58,7 +58,7 @@ export function AppSidebar() {
   const { isAuthenticated, user } = useUser();
 
   return (
-    <Sidebar>
+    <Sidebar className="bg-backgroud dark:bg-zinc-900">
       <SidebarContent className="border-none">
         <SidebarGroup>
           <SidebarGroupLabel className="flex items-center justify-between px-2 py-4 mb-4">
