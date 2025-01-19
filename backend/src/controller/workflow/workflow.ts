@@ -123,6 +123,7 @@ export const createWorkflowController = async (
       message: "Workflow and jobs created successfully.",
       data: safeData,
     });
+    producer.send();
   } catch (e: any) {
     if (e instanceof z.ZodError) {
       // Zod validation error
