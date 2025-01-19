@@ -6,10 +6,11 @@ import {
   WorkflowCreateSchema,
   WorkflowResponseSchema,
 } from "./schema";
-import { object, z } from "zod";
+import { z } from "zod";
 import { WorkflowResponseType } from "../../types";
 import { HandleScheduleNextExecution } from "../../utils/schedule-execution";
 import { createTriggerForWorkflow } from "./helper";
+import { producer } from "../../producer";
 
 // Controller function for creating a new workflow
 export const createNewWorkflowController = async (
@@ -78,10 +79,8 @@ export const createWorkflowController = async (
         throw new Error("Workflow does not exist.");
       }
 
-      let updatedWorkflow = dbWorkflow;
-
       if (name !== dbWorkflow.name || description !== dbWorkflow.description) {
-        updatedWorkflow = await prisma.workflow.update({
+        await prisma.workflow.update({
           where: { id: id },
           data: {
             name: name,
