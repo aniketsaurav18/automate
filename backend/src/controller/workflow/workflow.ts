@@ -10,7 +10,7 @@ import { z } from "zod";
 import { WorkflowResponseType } from "../../types";
 import { HandleScheduleNextExecution } from "../../utils/schedule-execution";
 import { createTriggerForWorkflow } from "./helper";
-import { producer } from "../../producer";
+import { produceMessage } from "../../producer/producer";
 
 // Controller function for creating a new workflow
 export const createNewWorkflowController = async (
@@ -123,7 +123,10 @@ export const createWorkflowController = async (
       message: "Workflow and jobs created successfully.",
       data: safeData,
     });
-    producer.send();
+    if(!result){
+      return;
+    }
+    produceMessage("create-execution", result.id)
   } catch (e: any) {
     if (e instanceof z.ZodError) {
       // Zod validation error
