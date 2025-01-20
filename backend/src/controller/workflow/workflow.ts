@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import db from "../../db";
-import { Job } from "@prisma/client";
+import { Job, PrismaClient } from "@prisma/client";
 import {
   JobCreateDataType,
   WorkflowCreateSchema,
@@ -11,6 +11,8 @@ import { WorkflowResponseType } from "../../types";
 import { HandleScheduleNextExecution } from "../../utils/schedule-execution";
 import { createTriggerForWorkflow } from "./helper";
 import { produceMessage } from "../../producer/producer";
+import { PRODUCER_KEY } from "../../producer";
+import prisma from "../../db";
 
 // Controller function for creating a new workflow
 export const createNewWorkflowController = async (
@@ -48,105 +50,6 @@ export const createNewWorkflowController = async (
       success: false,
       message: "Failed to create workflow",
     });
-  }
-};
-
-/*
- *
- * batch job save inside a workflow.
- * POST /workflow/:id
- */
-export const createWorkflowController = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const parsedBody = WorkflowCreateSchema.parse(req.body);
-
-    const userId = req.user?.id;
-    const id = req.params.id;
-    const { name, description, jobs } = parsedBody;
-
-    const result = await db.$transaction(async (prisma) => {
-      const dbWorkflow = await prisma.workflow.findFirst({
-        where: {
-          id: id,
-          owner_id: userId,
-        },
-      });
-
-      if (!dbWorkflow) {
-        throw new Error("Workflow does not exist.");
-      }
-
-      if (name !== dbWorkflow.name || description !== dbWorkflow.description) {
-        await prisma.workflow.update({
-          where: { id: id },
-          data: {
-            name: name,
-            description: description,
-          },
-        });
-      }
-
-      // Create new jobs associated with the workflow
-      console.log("Jobs createworkflowcontroller:", jobs);
-      if (jobs) {
-        await prisma.job.createMany({
-          data: jobs.map(({ id, ...job }: JobCreateDataType) => ({
-            ...job,
-            workflow_id: dbWorkflow.id,
-          })),
-        });
-
-        // const createdJobs = await prisma.job.findMany({
-        //   where: {
-        //     workflow_id: dbWorkflow.id,
-        //   },
-        // });
-        // console.log("created Job", createdJobs);
-        // for every workflow a trigger has to be created.
-        await createTriggerForWorkflow(jobs[0], prisma);
-      }
-
-      // Return the updated workflow with jobs
-      return prisma.workflow.findFirst({
-        where: { id: id, owner_id: userId },
-        include: { jobs: true },
-      });
-    });
-
-    const safeData = WorkflowCreateSchema.parse(result);
-
-    res.status(201).json({
-      success: true,
-      message: "Workflow and jobs created successfully.",
-      data: safeData,
-    });
-    if(!result){
-      return;
-    }
-    produceMessage("create-execution", result.id)
-  } catch (e: any) {
-    if (e instanceof z.ZodError) {
-      // Zod validation error
-      res.status(400).json({
-        success: false,
-        message: "Invalid request data",
-        errors: e.errors,
-      });
-    } else if (e.message === "Workflow does not exist.") {
-      res.status(400).json({
-        success: false,
-        message: e.message,
-      });
-    } else {
-      console.error(e);
-      res.status(500).json({
-        success: false,
-        message: "An error occurred.",
-      });
-    }
   }
 };
 
@@ -249,6 +152,105 @@ export const getWorkflowDataController = async (
   }
 };
 
+/*
+ *
+ * batch job save inside a workflow.
+ * POST /workflow/:id
+ */
+export const createWorkflowController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const parsedBody = WorkflowCreateSchema.parse(req.body);
+
+    const userId = req.user?.id;
+    const id = req.params.id;
+    const { name, description, jobs } = parsedBody;
+
+    const result = await db.$transaction(async (prisma) => {
+      const dbWorkflow = await prisma.workflow.findFirst({
+        where: {
+          id: id,
+          owner_id: userId,
+        },
+      });
+
+      if (!dbWorkflow) {
+        throw new Error("Workflow does not exist.");
+      }
+
+      if (name !== dbWorkflow.name || description !== dbWorkflow.description) {
+        await prisma.workflow.update({
+          where: { id: id },
+          data: {
+            name: name,
+            description: description,
+          },
+        });
+      }
+
+      // Create new jobs associated with the workflow
+      console.log("Jobs createworkflowcontroller:", jobs);
+      if (jobs) {
+        await prisma.job.createMany({
+          data: jobs.map(({ id, ...job }: JobCreateDataType) => ({
+            ...job,
+            workflow_id: dbWorkflow.id,
+          })),
+        });
+
+        // const createdJobs = await prisma.job.findMany({
+        //   where: {
+        //     workflow_id: dbWorkflow.id,
+        //   },
+        // });
+        // console.log("created Job", createdJobs);
+        // for every workflow a trigger has to be created.
+        await createTriggerForWorkflow(jobs[0], prisma);
+      }
+
+      // Return the updated workflow with jobs
+      return prisma.workflow.findFirst({
+        where: { id: id, owner_id: userId },
+        include: { jobs: true },
+      });
+    });
+    if (!result) {
+      throw new Error("Some error has occured.");
+    }
+    produceMessage(PRODUCER_KEY, result.id);
+
+    const safeData = WorkflowCreateSchema.parse(result);
+
+    res.status(201).json({
+      success: true,
+      message: "Workflow and jobs created successfully.",
+      data: safeData,
+    });
+  } catch (e: any) {
+    if (e instanceof z.ZodError) {
+      // Zod validation error
+      res.status(400).json({
+        success: false,
+        message: "Invalid request data",
+        errors: e.errors,
+      });
+    } else if (e.message === "Workflow does not exist.") {
+      res.status(400).json({
+        success: false,
+        message: e.message,
+      });
+    } else {
+      console.error(e);
+      res.status(500).json({
+        success: false,
+        message: "An error occurred.",
+      });
+    }
+  }
+};
+
 // PUT /api/workflow/:id
 export const updateWorkflowController = async (
   req: Request,
@@ -344,6 +346,13 @@ export const updateWorkflowController = async (
       });
     });
 
+    if (!data) {
+      throw new Error("Some Error has occured.");
+    }
+
+    // send it to producer for execution creation.
+    produceMessage(PRODUCER_KEY, data.id);
+
     const safeData = WorkflowResponseSchema.parse(data);
 
     res.status(200).json({
@@ -381,7 +390,7 @@ export const activateWorkflowController = async (
       });
       return;
     }
-    const data = db.workflow.update({
+    const data = await db.workflow.update({
       where: {
         id: workflowId,
         owner_id: userId,
@@ -390,6 +399,13 @@ export const activateWorkflowController = async (
         active: true,
       },
     });
+
+    if (!data) {
+      throw new Error("Some error has occured.");
+    }
+
+    // send the workflow id to producer
+    produceMessage(PRODUCER_KEY, data.id);
 
     res.status(200).json({
       success: true,
@@ -430,22 +446,35 @@ export const deactivateWorkflowController = async (
       });
       return;
     }
-    const data = await db.workflow.update({
-      where: {
-        id: workflowId,
-        owner_id: userId,
-      },
-      data: {
-        active: false,
-        next_execution: null,
-      },
-    });
+
+    const data = await db.$transaction([
+      prisma.workflow.update({
+        where: {
+          id: workflowId,
+          owner_id: userId,
+        },
+        data: {
+          active: false,
+          next_execution: null,
+        },
+      }),
+      prisma.execution.deleteMany({
+        where: {
+          workflow_id: workflowId,
+          status: "pending",
+        },
+      }),
+    ]);
+
+    if (!data) {
+      throw new Error("Something went wrong.");
+    }
 
     res.status(200).json({
       success: true,
       data: {
         id: workflowId,
-        active: data.active,
+        active: data[0].active,
       },
     });
     return;

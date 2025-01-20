@@ -19,4 +19,6 @@ export const initializeKafka = async (): Promise<void> => {
   }
 };
 
+export const PRODUCER_KEY = "create-execution";
+
 export { producer };
