@@ -13,6 +13,10 @@
   "dependencies": {
     "@types/node": "^22.10.7",
     "dotenv": "^16.4.7",
-    "kafkajs": "^2.2.4"
+    "kafkajs": "^2.2.4",
+    "pg": "^8.13.1"
+  },
+  "devDependencies": {
+    "@types/pg": "^8.11.10"
   }
 }
