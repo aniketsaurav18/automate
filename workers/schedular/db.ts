@@ -3,12 +3,12 @@ import { Pool, QueryResult } from "pg";
 const pool = new Pool({
   user: process.env.DB_USER || "postgres",
   host: process.env.DB_HOST || "localhost",
-  database: process.env.DB_NAME || "postgres",
-  password: process.env.DB_PASSWORD || "password",
+  database: process.env.DB_NAME || "automate",
+  password: process.env.DB_PASSWORD || "aniket",
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
 });
 
-type QueryResultDB = {
+export type QueryResultDB = {
   result: string;
   queryResult?: QueryResult | undefined;
   errorMessage?: string;
