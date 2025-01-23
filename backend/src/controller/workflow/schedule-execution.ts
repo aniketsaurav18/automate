@@ -1,5 +1,5 @@
-import { Workflow } from "@prisma/client";
-import db from "../db";
+import { Prisma, Workflow } from "@prisma/client";
+import db from "../../db";
 
 const convertTimetoUTC = (time: Date, timezoneOffset: string): Date => {
   try {
@@ -66,20 +66,22 @@ const getIntervalNextExecutionTime = (
   }
 };
 
-const handleCreateExecution = async (workflowId: string, fixedTime: Date) => {
+const handleCreateExecution = async (
+  prisma: Prisma.TransactionClient,
+  workflowId: string,
+  fixedTime: Date
+) => {
   try {
-    await db.$transaction(async (prisma) => {
-      await prisma.execution.create({
-        data: {
-          workflow_id: workflowId,
-          execution_time: fixedTime,
-          status: "pending",
-        },
-      });
-      await prisma.workflow.update({
-        where: { id: workflowId },
-        data: { next_execution: fixedTime },
-      });
+    await prisma.execution.create({
+      data: {
+        workflow_id: workflowId,
+        execution_time: fixedTime,
+        status: "pending",
+      },
+    });
+    await prisma.workflow.update({
+      where: { id: workflowId },
+      data: { next_execution: fixedTime },
     });
   } catch (error) {
     console.error(
@@ -91,19 +93,22 @@ const handleCreateExecution = async (workflowId: string, fixedTime: Date) => {
   }
 };
 
-export const HandleScheduleNextExecution = async (workflow: Workflow) => {
+export const handleScheduleNextExecution = async (
+  prisma: Prisma.TransactionClient,
+  workflowId: string
+) => {
   try {
-    const trigger = await db.trigger.findFirst({
-      where: { workflow_id: workflow.id },
+    const trigger = await prisma.trigger.findFirst({
+      where: { workflow_id: workflowId },
     });
 
     if (!trigger) {
-      console.error(`Trigger not found for workflow ID: ${workflow.id}`);
-      throw new Error(`Trigger not found for workflow ID: ${workflow.id}`);
+      console.error(`Trigger not found for workflow ID: ${workflowId}`);
+      throw new Error(`Trigger not found for workflow ID: ${workflowId}`);
     }
 
     if (trigger.type === "webhook") {
-      console.log(`Skipping webhook trigger for workflow ID: ${workflow.id}`);
+      console.log(`Skipping webhook trigger for workflow ID: ${workflowId}`);
       return false; // No further processing needed for webhook triggers
     }
 
@@ -112,7 +117,7 @@ export const HandleScheduleNextExecution = async (workflow: Workflow) => {
         new Date(trigger.fixed_time),
         trigger.timezone
       );
-      await handleCreateExecution(workflow.id, fixedTime);
+      await handleCreateExecution(prisma, workflowId, fixedTime);
     } else if (
       trigger.type === "interval" &&
       trigger.interval_type &&
@@ -122,22 +127,22 @@ export const HandleScheduleNextExecution = async (workflow: Workflow) => {
         trigger.interval_type,
         trigger.interval_unit
       );
-      await handleCreateExecution(workflow.id, fixedTime);
+      await handleCreateExecution(prisma, workflowId, fixedTime);
     } else {
       console.error(
         "Invalid trigger configuration for workflow ID:",
-        workflow.id
+        workflowId
       );
-      throw new Error("Invalid trigger configuration.");
+      throw new Error("InIdid trigger configuration.");
     }
   } catch (error) {
     console.error(
       "Error handling schedule next execution for workflow ID:",
-      workflow.id,
+      workflowId,
       error
     );
     throw new Error(
-      `Failed to handle the next execution for workflow ID: ${workflow.id}`
+      `Failed to handle the next execution for workflow ID: ${workflowId}`
     );
   }
 };

@@ -73,7 +73,7 @@ export const createTriggerForWorkflow = async (
       step_no: 1,
     },
   });
-  console.log("triggerJob", triggerJob);
+  // console.log("triggerJob", triggerJob);
   if (!triggerJob) {
     throw new Error("Trigger job not found.");
   }

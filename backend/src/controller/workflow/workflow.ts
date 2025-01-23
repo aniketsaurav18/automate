@@ -8,11 +8,12 @@ import {
 } from "./schema";
 import { z } from "zod";
 import { WorkflowResponseType } from "../../types";
-import { HandleScheduleNextExecution } from "../../utils/schedule-execution";
+import { handleScheduleNextExecution } from "./schedule-execution";
 import { createTriggerForWorkflow } from "./helper";
 import { produceMessage } from "../../producer/producer";
 import { PRODUCER_KEY } from "../../producer";
 import prisma from "../../db";
+import { workerData } from "worker_threads";
 
 // Controller function for creating a new workflow
 export const createNewWorkflowController = async (
@@ -208,6 +209,8 @@ export const createWorkflowController = async (
         // console.log("created Job", createdJobs);
         // for every workflow a trigger has to be created.
         await createTriggerForWorkflow(jobs[0], prisma);
+
+        await handleScheduleNextExecution(prisma, id);
       }
 
       // Return the updated workflow with jobs
@@ -219,7 +222,6 @@ export const createWorkflowController = async (
     if (!result) {
       throw new Error("Some error has occured.");
     }
-    produceMessage(PRODUCER_KEY, result.id);
 
     const safeData = WorkflowCreateSchema.parse(result);
 
@@ -340,6 +342,8 @@ export const updateWorkflowController = async (
 
       await createTriggerForWorkflow(jobs[0], prisma);
 
+      await handleScheduleNextExecution(prisma, workflow.id);
+
       return prisma.workflow.findFirst({
         where: { id: id, owner_id: userId },
         include: { jobs: true },
@@ -349,9 +353,6 @@ export const updateWorkflowController = async (
     if (!data) {
       throw new Error("Some Error has occured.");
     }
-
-    // send it to producer for execution creation.
-    produceMessage(PRODUCER_KEY, data.id);
 
     const safeData = WorkflowResponseSchema.parse(data);
 
@@ -390,22 +391,25 @@ export const activateWorkflowController = async (
       });
       return;
     }
-    const data = await db.workflow.update({
-      where: {
-        id: workflowId,
-        owner_id: userId,
-      },
-      data: {
-        active: true,
-      },
+    const data = await db.$transaction(async (prisma) => {
+      const updatedWorkflow = await prisma.workflow.update({
+        where: {
+          id: workflowId,
+          owner_id: userId,
+        },
+        data: {
+          active: true,
+        },
+      });
+
+      await handleScheduleNextExecution(prisma, workflowId);
+
+      return updatedWorkflow;
     });
 
     if (!data) {
       throw new Error("Some error has occured.");
     }
-
-    // send the workflow id to producer
-    produceMessage(PRODUCER_KEY, data.id);
 
     res.status(200).json({
       success: true,
