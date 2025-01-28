@@ -85,8 +85,22 @@ export const ScheduleSchema = BaseScheduleSchema.refine(
   }
 );
 
+export const EmailJobSchema = z.object({
+  key: z.literal("email"),
+  input: z.object({
+    reciepents: z.string().email(),
+    subject: z.string().max(255),
+    body: z.string(),
+    attatchments: z.string().url().optional(),
+  }),
+  output: z.object({
+    success: z.boolean(),
+  })
+})
+
 export const JobDataSchema = z.discriminatedUnion("key", [
   HttpJobSchema,
   WebhookJobSchema,
   BaseScheduleSchema,
+  EmailJobSchema,
 ]);
