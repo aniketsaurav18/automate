@@ -13,7 +13,7 @@ const kafka = new Kafka({
   brokers: [Broker],
 });
 
-const consumer = kafka.consumer({ groupId: GroupId });
+const consumer = kafka.producer();
 
 const startConsumer = async () => {
   try {
