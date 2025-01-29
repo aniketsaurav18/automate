@@ -25,13 +25,10 @@ export const initializeKafka = async (): Promise<void> => {
 };
 
 export const produceMessage = async (key: string, message: string) => {
-    await producer.send({
-        topic: process.env.PRODUCER_CREATE_EXECUTION_TOPIC ?? "topic",
-        messages: [
-            { key: key, value: message },
-        ],
-    })
+  await producer.send({
+    topic: process.env.PRODUCER_CREATE_EXECUTION_TOPIC ?? "topic",
+    messages: [{ key: key, value: message }],
+  });
 };
-
 
 export { producer };
