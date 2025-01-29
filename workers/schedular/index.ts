@@ -1,54 +1,42 @@
 import dotenv from "dotenv";
 dotenv.config();
+import cron from "node-cron"
 
-import { Kafka } from "kafkajs";
+import { initializeKafka, producer } from "./producer";
+import { checkDbConnection } from "./db";
+import { executionSchedularFn } from "./schedular";
 
-const Broker = process.env.KAFKA_BROKER || "localhost:9092";
-const GroupId = process.env.KAFKA_GROUP_ID || "my-group";
 
-console.log(Broker);
 
-const kafka = new Kafka({
-  clientId: "my-app",
-  brokers: [Broker],
-});
-
-const consumer = kafka.producer();
-
-const startConsumer = async () => {
+(async () => {
   try {
-    await consumer.connect();
-    console.log("Consumer connected");
+    // Checking db connection
+    await checkDbConnection();
+    console.log("Database connected");
 
-    await consumer.subscribe({
-      topic: "create-execution",
-      fromBeginning: true,
-    });
-    console.log("Subscribed to topic");
+    // Initialize Kafka producer
+    await initializeKafka();
+    console.log("Kafka producer connected");
 
-    await consumer.run({
-      eachMessage: async ({ topic, partition, message }) => {
-        console.log("Message recieved");
-        console.log({
-          topic,
-          partition,
-          key: message.key ? message.key.toString() : "no key",
-          value: message.value ? message.value.toString() : "no value",
-        });
-      },
-    });
+    // initilize the cron job
+    cron.schedule("* * * * *", executionSchedularFn)
+
   } catch (error) {
-    console.error("Error in Kafka consumer:", error);
+    console.error("Application startup failed:", error);
+    process.exit(1);
   }
-};
+})();
+
+
+
 
 const gracefulShutdown = async () => {
   try {
     console.log("Disconnecting Kafka consumer...");
-    await consumer.disconnect();
+    await producer.disconnect();
     console.log("Kafka consumer disconnected.");
   } catch (error) {
-    console.error("Error during consumer disconnect:", error);
+    console.error("Error during producer disconnect:", error);
   } finally {
     process.exit();
   }
@@ -57,4 +45,3 @@ const gracefulShutdown = async () => {
 process.on("SIGINT", gracefulShutdown);
 process.on("SIGTERM", gracefulShutdown);
 
-startConsumer();

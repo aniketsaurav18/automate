@@ -14,48 +14,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const kafkajs_1 = require("kafkajs");
-const Broker = process.env.KAFKA_BROKER || "localhost:9092";
-const GroupId = process.env.KAFKA_GROUP_ID || "my-group";
-console.log(Broker);
-const kafka = new kafkajs_1.Kafka({
-    clientId: "my-app",
-    brokers: [Broker],
-});
-const consumer = kafka.consumer({ groupId: GroupId });
-const startConsumer = () => __awaiter(void 0, void 0, void 0, function* () {
+const node_cron_1 = __importDefault(require("node-cron"));
+const producer_1 = require("./producer");
+const db_1 = require("./db");
+const schedular_1 = require("./schedular");
+(() => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield consumer.connect();
-        console.log("Consumer connected");
-        yield consumer.subscribe({
-            topic: "create-execution",
-            fromBeginning: true,
-        });
-        console.log("Subscribed to topic");
-        yield consumer.run({
-            eachMessage: (_a) => __awaiter(void 0, [_a], void 0, function* ({ topic, partition, message }) {
-                console.log("Message recieved");
-                console.log({
-                    topic,
-                    partition,
-                    key: message.key ? message.key.toString() : "no key",
-                    value: message.value ? message.value.toString() : "no value",
-                });
-            }),
-        });
+        // Checking db connection
+        yield (0, db_1.checkDbConnection)();
+        console.log("Database connected");
+        // Initialize Kafka producer
+        yield (0, producer_1.initializeKafka)();
+        console.log("Kafka producer connected");
+        // initilize the cron job
+        node_cron_1.default.schedule("* * * * *", schedular_1.executionSchedularFn);
     }
     catch (error) {
-        console.error("Error in Kafka consumer:", error);
+        console.error("Application startup failed:", error);
+        process.exit(1);
     }
-});
+}))();
 const gracefulShutdown = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         console.log("Disconnecting Kafka consumer...");
-        yield consumer.disconnect();
+        yield producer_1.producer.disconnect();
         console.log("Kafka consumer disconnected.");
     }
     catch (error) {
-        console.error("Error during consumer disconnect:", error);
+        console.error("Error during producer disconnect:", error);
     }
     finally {
         process.exit();
@@ -63,4 +49,3 @@ const gracefulShutdown = () => __awaiter(void 0, void 0, void 0, function* () {
 });
 process.on("SIGINT", gracefulShutdown);
 process.on("SIGTERM", gracefulShutdown);
-startConsumer();

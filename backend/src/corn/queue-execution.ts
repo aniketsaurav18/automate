@@ -25,6 +25,6 @@ export async function queueExecution() {
       messages: executionIds,
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 }

@@ -1,6 +1,6 @@
 import { Pool, QueryResult } from "pg";
 
-const pool = new Pool({
+export const pool = new Pool({
   user: process.env.DB_USER || "postgres",
   host: process.env.DB_HOST || "localhost",
   database: process.env.DB_NAME || "automate",
@@ -67,5 +67,26 @@ export const queryDB = async (
     };
   }
 };
+
+export const getExecutionByStatus = async (status: string = "pending") => {
+  try {
+    const query = `
+    SELECT * FROM execution
+    WHERE execution_time >= NOW()
+    AND status = $1;
+  `;
+    const queryRes = await queryDB(query, [status]);
+    if (queryRes.result == "error") {
+      throw new Error(queryRes.errorMessage);
+    }
+    const res = queryRes.queryResult?.rows;
+  } catch (e: any) {
+    console.error(e);
+  }
+};
+
+export async function checkDbConnection() {
+  await pool.query("SELECT 1");
+}
 
 export default pool;
