@@ -128,7 +128,7 @@ export function ConfigureStepModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[600px] min-h-96 p-0 gap-0 border border-indigo-100 flex flex-col">
+      <DialogContent className="sm:max-w-[600px] min-h-96 p-0 gap-0 border border-indigo-100 flex flex-col dark:bg-black">
         <DialogHeader className="p-4 space-y-0">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">

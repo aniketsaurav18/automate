@@ -4,21 +4,22 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc -b && node dist/index.js"
+    "dev": "tsc -b && nodemon dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@types/node": "^22.10.7",
     "dotenv": "^16.4.7",
     "kafkajs": "^2.2.4",
     "node-cron": "^3.0.3",
     "pg": "^8.13.1"
   },
   "devDependencies": {
+    "@types/node": "^22.10.7",
     "@types/node-cron": "^3.0.11",
-    "@types/pg": "^8.11.10"
+    "@types/pg": "^8.11.10",
+    "nodemon": "^3.1.9"
   }
 }

@@ -71,7 +71,7 @@ export const queryDB = async (
 export const getExecutionByStatus = async (status: string = "pending") => {
   try {
     const query = `
-    SELECT * FROM execution
+    SELECT * FROM "Execution"
     WHERE execution_time >= NOW()
     AND status = $1;
   `;

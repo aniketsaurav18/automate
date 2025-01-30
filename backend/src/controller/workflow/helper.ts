@@ -34,8 +34,17 @@ const handleScheduledTriggerCreating = async (
   const { type, fixedTime, interval } = scheduleData.data;
 
   if (type === "fixed") {
-    await prisma.trigger.create({
-      data: {
+    await prisma.trigger.upsert({
+      where: {
+        workflow_id: job.workflow_id,
+      },
+      create: {
+        type: "fixed",
+        fixed_time: fixedTime?.dateTime,
+        timezone: fixedTime?.timeZoneOffset,
+        workflow_id: job.workflow_id,
+      },
+      update: {
         type: "fixed",
         fixed_time: fixedTime?.dateTime,
         timezone: fixedTime?.timeZoneOffset,
