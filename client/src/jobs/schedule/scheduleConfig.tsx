@@ -61,13 +61,13 @@ export const ScheduleConfig = forwardRef(
 
     const handleSubmit = () => {
       if (isDateTimeMode && date) {
-        const [hours, minutes] = time.split(":").map(Number);
-        const updatedDate = set(date, { hours, minutes });
+        // Combine the user-provided date and time into a single string as it is.
+        const dateTimeString = `${date.toISOString().split("T")[0]}T${time}:00`;
         const ScheduleJob = {
           key: "schedule",
           type: "fixed",
           fixedTime: {
-            dateTime: updatedDate.toISOString(),
+            dateTime: dateTimeString,
             timeZoneOffset: timezone,
           },
         } as ScheduleJobDataType;
