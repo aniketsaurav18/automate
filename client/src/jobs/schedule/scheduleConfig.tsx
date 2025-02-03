@@ -43,10 +43,21 @@ export const ScheduleConfig = forwardRef(
       if (!jobData) return;
       const data = jobData as ScheduleJobDataType;
       if (data.type == "fixed" && data.fixedTime) {
-        const parsedDate = parseISO(data.fixedTime?.dateTime);
+        // Parse the date string directly using the Date constructor
+        const parsedDate = new Date(data.fixedTime.dateTime);
+
+        // Set the date (as a Date object)
         setDate(parsedDate);
-        setTime(format(parsedDate, "HH:mm"));
-        setTimezone(data.fixedTime?.timeZoneOffset || "UTC");
+
+        // Extract hours and minutes in "HH:mm" format
+        const hours = String(parsedDate.getUTCHours()).padStart(2, "0");
+        const minutes = String(parsedDate.getUTCMinutes()).padStart(2, "0");
+        const time = `${hours}:${minutes}`;
+        setTime(time);
+
+        // Set the timezone (use the provided offset or default to "UTC")
+        const timezoneOffset = data.fixedTime.timeZoneOffset || "UTC";
+        setTimezone(timezoneOffset);
       } else if (data.type === "interval" && data.interval) {
         setIntervalType(data.interval.unit);
         setIntervalAmount(data.interval.value);
@@ -62,7 +73,9 @@ export const ScheduleConfig = forwardRef(
     const handleSubmit = () => {
       if (isDateTimeMode && date) {
         // Combine the user-provided date and time into a single string as it is.
-        const dateTimeString = `${date.toISOString().split("T")[0]}T${time}:00`;
+        const dateTimeString = `${
+          date.toISOString().split("T")[0]
+        }T${time}:00Z`;
         const ScheduleJob = {
           key: "schedule",
           type: "fixed",

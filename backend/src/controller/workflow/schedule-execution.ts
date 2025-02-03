@@ -72,6 +72,12 @@ const handleCreateExecution = async (
   fixedTime: Date
 ) => {
   try {
+    await prisma.execution.deleteMany({
+      where: {
+        workflow_id: workflowId,
+        status: "pending",
+      },
+    });
     await prisma.execution.create({
       data: {
         workflow_id: workflowId,
