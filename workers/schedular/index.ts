@@ -1,12 +1,10 @@
 import dotenv from "dotenv";
 dotenv.config();
-import cron from "node-cron"
+import cron from "node-cron";
 
 import { initializeKafka, producer } from "./producer";
 import { checkDbConnection } from "./db";
 import { executionSchedularFn } from "./schedular";
-
-
 
 (async () => {
   try {
@@ -18,17 +16,15 @@ import { executionSchedularFn } from "./schedular";
     await initializeKafka();
     console.log("Kafka producer connected");
 
-    // initilize the cron job
-    cron.schedule("* * * * *", executionSchedularFn)
+    executionSchedularFn();
 
+    // initilize the cron job
+    cron.schedule("* * * * *", executionSchedularFn);
   } catch (error) {
     console.error("Application startup failed:", error);
     process.exit(1);
   }
 })();
-
-
-
 
 const gracefulShutdown = async () => {
   try {
@@ -44,4 +40,3 @@ const gracefulShutdown = async () => {
 
 process.on("SIGINT", gracefulShutdown);
 process.on("SIGTERM", gracefulShutdown);
-

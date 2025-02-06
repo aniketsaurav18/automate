@@ -106,8 +106,9 @@ model Execution {
 }
 
 enum ExecutionStatus {
-    running
     pending
+    queued
+    running
     completed
 }
 

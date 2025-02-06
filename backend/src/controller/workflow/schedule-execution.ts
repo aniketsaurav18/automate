@@ -1,24 +1,21 @@
 import { Prisma, Workflow } from "@prisma/client";
 import db from "../../db";
 
-const convertTimetoUTC = (time: Date, timezoneOffset: string): Date => {
-  try {
-    const match = timezoneOffset.match(/([+-])(\d{2}):(\d{2})/);
-    if (!match) throw new Error("Invalid timezone offset format.");
-
-    const [sign, hours, minutes] = match.slice(1);
-    const offsetMinutes = parseInt(hours) * 60 + parseInt(minutes);
-    const offsetInMilliseconds = offsetMinutes * 60 * 1000;
-
-    return sign === "+"
-      ? new Date(time.getTime() - offsetInMilliseconds)
-      : new Date(time.getTime() + offsetInMilliseconds);
-  } catch (error) {
-    console.error("Error in convertTimetoUTC:", error);
-    throw new Error(
-      "Failed to convert time to UTC. Check timezone offset or time format."
-    );
+const convertTimetoUTC = (localTime: Date, timezoneOffset: string): Date => {
+  // Parse the offset string (format: ±HH:MM)
+  const match = timezoneOffset.match(/([+-])(\d{2}):(\d{2})/);
+  if (!match) {
+    throw new Error("Invalid timezone offset format. Expected format: ±HH:MM");
   }
+
+  const [, sign, hoursStr, minutesStr] = match;
+  const offsetMinutes = parseInt(hoursStr, 10) * 60 + parseInt(minutesStr, 10);
+  const offsetMilliseconds = offsetMinutes * 60 * 1000;
+  console.log(offsetMilliseconds);
+
+  return sign === "+"
+    ? new Date(localTime.getTime() - offsetMilliseconds)
+    : new Date(localTime.getTime() + offsetMilliseconds);
 };
 
 const getIntervalNextExecutionTime = (
@@ -123,6 +120,7 @@ export const handleScheduleNextExecution = async (
         new Date(trigger.fixed_time),
         trigger.timezone
       );
+      console.log("fixed time for execution", fixedTime);
       await handleCreateExecution(prisma, workflowId, fixedTime);
     } else if (
       trigger.type === "interval" &&
@@ -133,6 +131,7 @@ export const handleScheduleNextExecution = async (
         trigger.interval_type,
         trigger.interval_unit
       );
+      console.log("fixed time for execution", fixedTime);
       await handleCreateExecution(prisma, workflowId, fixedTime);
     } else {
       console.error(

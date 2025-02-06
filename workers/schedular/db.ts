@@ -6,6 +6,7 @@ export const pool = new Pool({
   database: process.env.DB_NAME || "automate",
   password: process.env.DB_PASSWORD || "aniket",
   port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
+  ssl: true,
 });
 
 export type QueryResultDB = {
@@ -72,8 +73,7 @@ export const getExecutionByStatus = async (status: string = "pending") => {
   try {
     const query = `
     SELECT * FROM "Execution"
-    WHERE execution_time >= NOW()
-    AND status = $1;
+    WHERE status = $1;
   `;
     const queryRes = await queryDB(query, [status]);
     if (queryRes.result == "error") {
