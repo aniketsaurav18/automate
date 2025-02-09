@@ -25,8 +25,9 @@ export async function executionSchedularFn() {
         FOR UPDATE SKIP LOCKED
       `;
     const { rows: executions } = await client.query(selectQuery);
-    await client.query("COMMIT");
 
+    await client.query("COMMIT");
+    console.log(executions);
     // Process each execution individually.
     for (const execution of executions) {
       const execClient = await pool.connect();

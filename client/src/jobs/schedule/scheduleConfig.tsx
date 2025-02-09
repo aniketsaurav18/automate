@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { format, parseISO, set } from "date-fns";
+import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -73,9 +73,9 @@ export const ScheduleConfig = forwardRef(
     const handleSubmit = () => {
       if (isDateTimeMode && date) {
         // Combine the user-provided date and time into a single string as it is.
-        const dateTimeString = `${
-          date.toISOString().split("T")[0]
-        }T${time}:00Z`;
+        const formattedDate = format(date, "yyyy-MM-dd");
+        const dateTimeString = `${formattedDate}T${time}:00Z`;
+        console.log(dateTimeString);
         const ScheduleJob = {
           key: "schedule",
           type: "fixed",
