@@ -1,6 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { Pool, QueryResult } from "pg";
-import { rawListeners } from "process";
-import { isReadable } from "stream";
 
 export const pool = new Pool({
   user: process.env.DB_USER || "postgres",
@@ -89,12 +89,13 @@ export const getAllJobDataformWorkflowId = async (workflowId: string) => {
     ORDER BY step_no ASC;
   `;
   const res = await queryDB(query, [workflowId]);
-  if(res.result != "success"){
+  if (res.result != "success") {
     console.error(res.details);
     throw new Error(res.errorMessage);
   }
-  console.log(res.queryResult)
-}
+  const d = res.queryResult?.rows as any;
+  console.log(d[1].data);
+};
 
 export async function checkDbConnection() {
   await pool.query("SELECT 1");

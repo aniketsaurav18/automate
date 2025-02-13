@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { Kafka, EachMessagePayload } from "kafkajs";
+import { getAllJobDataformWorkflowId } from "./db";
 
 const CONSUMER_TOPIC =
   (process.env.KAFKA_CONSUMER_TOPIC as string) || "execution";
@@ -45,4 +46,6 @@ async function runConsumer() {
 }
 
 // Start the consumer
-runConsumer().catch((error) => console.error("Fatal Error:", error));
+// runConsumer().catch((error) => console.error("Fatal Error:", error));
+
+console.log(getAllJobDataformWorkflowId("cm6nwwvgz0003iuqr8c634bfc"));
