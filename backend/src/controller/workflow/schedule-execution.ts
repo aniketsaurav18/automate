@@ -69,6 +69,16 @@ const handleCreateExecution = async (
   fixedTime: Date
 ) => {
   try {
+    const workflow = await prisma.workflow.update({
+      where: { id: workflowId },
+      data: { next_execution: fixedTime },
+      select: { job_count: true },
+    });
+
+    if (!workflow) {
+      throw new Error(`Workflow not found with ID: ${workflowId}`);
+    }
+
     await prisma.execution.deleteMany({
       where: {
         workflow_id: workflowId,
@@ -80,11 +90,8 @@ const handleCreateExecution = async (
         workflow_id: workflowId,
         execution_time: fixedTime,
         status: "pending",
+        job_count: workflow.job_count,
       },
-    });
-    await prisma.workflow.update({
-      where: { id: workflowId },
-      data: { next_execution: fixedTime },
     });
   } catch (error) {
     console.error(

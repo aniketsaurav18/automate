@@ -45,7 +45,7 @@ async function runConsumer() {
   }
 }
 
-// Start the consumer
-// runConsumer().catch((error) => console.error("Fatal Error:", error));
+//Start the consumer
+runConsumer().catch((error) => console.error("Fatal Error:", error));
 
-console.log(getAllJobDataformWorkflowId("cm6nwwvgz0003iuqr8c634bfc"));
+// console.log(getAllJobDataformWorkflowId("cm6nwwvgz0003iuqr8c634bfc"));

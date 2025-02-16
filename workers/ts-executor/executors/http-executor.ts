@@ -3,7 +3,7 @@ import { HttpJobSchema } from "../../../backend/src/schema";
 import { executeHttpRequest } from "./common";
 
 // Function to execute an HTTP job
-async function executeHttpJob(job: HttpJobSchema) {
+export async function executeHttpJob(job: HttpJobSchema) {
   const { input } = job;
 
   try {
@@ -17,24 +17,33 @@ async function executeHttpJob(job: HttpJobSchema) {
       method: input.method,
       url: url.toString(),
       headers: input.headers,
-      data: ["POST", "PUT", "PATCH"].includes(input.method) ? input.body : undefined,
+      data: ["POST", "PUT", "PATCH"].includes(input.method)
+        ? input.body
+        : undefined,
     };
 
     const response = await executeHttpRequest(config);
 
-    const result = {
+    const result: HttpJobSchema["output"] = {
       statusCode: response.status,
-      headers: response.headers,
-      body: typeof response.data === "string" ? response.data : JSON.stringify(response.data),
+      headers: Object.fromEntries(
+        Object.entries(response.headers).map(([k, v]) => [k, String(v)])
+      ),
+      body:
+        typeof response.data === "string"
+          ? response.data
+          : JSON.stringify(response.data),
     };
 
     return {
       key: job.key,
+      success: true,
       output: result,
     };
   } catch (error: any) {
     return {
       key: job.key,
+      success: false,
       output: {
         statusCode: error.response?.status || 500,
         headers: error.response?.headers || {},

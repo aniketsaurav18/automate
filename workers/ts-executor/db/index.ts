@@ -71,34 +71,4 @@ export const queryDB = async (
   }
 };
 
-export const getAllJobDataformWorkflowId = async (workflowId: string) => {
-  const query = `
-    SELECT 
-        id, 
-        name, 
-        description, 
-        workflow_id, 
-        app, 
-        step_no, 
-        type, 
-        data, 
-        created_at, 
-        updated_at
-    FROM "Job"
-    WHERE workflow_id = $1
-    ORDER BY step_no ASC;
-  `;
-  const res = await queryDB(query, [workflowId]);
-  if (res.result != "success") {
-    console.error(res.details);
-    throw new Error(res.errorMessage);
-  }
-  const d = res.queryResult?.rows as any;
-  console.log(d[1].data);
-};
-
-export async function checkDbConnection() {
-  await pool.query("SELECT 1");
-}
-
 export default pool;

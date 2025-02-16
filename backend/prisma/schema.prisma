@@ -98,11 +98,13 @@ model Execution {
     workflow_id        String
     execution_time     DateTime //when this execution should start
     results            Json[]          @default([])
+    job_count          Int // no of jobs to be executed.
     total_job_executed Int             @default(0)
     status             ExecutionStatus
     job_index          Int             @default(0) // will point to the index of job that is going to be executed.
     created_at         DateTime        @default(now())
     finished_at        DateTime?
+    error              String?
 }
 
 enum ExecutionStatus {
@@ -110,6 +112,7 @@ enum ExecutionStatus {
     queued
     running
     completed
+    failed
 }
 
 enum Apps {
