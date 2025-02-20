@@ -9,7 +9,7 @@ const kafka = new Kafka({
 });
 
 let producer;
-const message = JSON.stringify({ executionId: "dkjfalskdfj", workflowId: "dskjdfkajdkf" });
+const message = JSON.stringify({ executionId: "0a844c2c-95c2-41d3-9f06-b4a5d807a93a", workflowId: "cm6xxo0gi0007iu46h3393k8l" });
 
 async function produceDummyMessage() {
   try {

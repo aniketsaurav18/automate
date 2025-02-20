@@ -38,18 +38,19 @@ export async function updateJobResult(
   const query = `
     UPDATE "Execution"
     SET 
-      results = results || $1::jsonb, 
+      results = COALESCE(results, ARRAY[]::jsonb[]) || ARRAY[$1::jsonb],
       job_index = job_index + 1, 
       total_job_executed = total_job_executed + 1
     WHERE id = $2
     RETURNING *;
   `;
-  const res = await queryDB(query, [executionId, result]);
+  const res = await queryDB(query, [result, executionId]);
   if (res.result != "success") {
     console.error(`Job result update failed, executionId:${executionId}`);
     throw new Error(res.errorMessage);
   }
   const r = res.queryResult?.rows[0];
+  console.log("execution", r);
   if (r.job_count == r.total_job_executed) {
     const s = await markExecutionCompleted(executionId);
     return {
@@ -95,13 +96,20 @@ export async function markExecutionFailed(
       RETURNING *;
     `;
 
-  const res = await queryDB(query, [executionId, errorMessage]);
-  if (res.result != "success") {
-    console.error(
-      `Failed to mark execution as failed, executionId:${executionId}`
-    );
-    throw new Error(res.errorMessage);
+  try {
+    const res = await queryDB(query, [executionId, errorMessage]);
+    if (res.result != "success") {
+      console.error(
+        `Failed to mark execution as failed, executionId:${executionId}`
+      );
+      console.error(res.errorMessage);
+    }
+    return res;
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(`Error marking execution as failed: ${error.message}`);
+    } else {
+      console.error(`Error marking execution as failed: ${String(error)}`);
+    }
   }
-  return res;
 }
-
