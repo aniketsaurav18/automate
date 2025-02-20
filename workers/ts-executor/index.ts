@@ -1,8 +1,9 @@
 import dotenv from "dotenv";
 dotenv.config();
 import { Kafka, EachMessagePayload } from "kafkajs";
-import Execution from "./Execution"; // Your Execution class
-import ExecutionManager from "./ExecutionManager"; // Execution Manager
+import Execution from "./executors"; 
+import ExecutionManager from "./execution-manager"; 
+import { getAllJobDataformWorkflowId } from "./db/functions";
 
 const CONSUMER_TOPIC = process.env.KAFKA_CONSUMER_TOPIC || "execution";
 const MAX_CONCURRENT_EXECUTIONS = 5; // Max 5 executions at a time
@@ -36,21 +37,24 @@ async function runConsumer() {
         const workflowId = message.value?.toString();
         if (!workflowId) return;
 
-        console.log(`Received Workflow ID: ${workflowId}`);
+        console.log(workflowId)
+        return;
 
-        // Fetch job data for the workflow
-        const jobData = await getAllJobDataformWorkflowId(workflowId);
-        if (!jobData.length) {
-          console.log(`No jobs found for Workflow ID: ${workflowId}`);
-          return;
-        }
+        // console.log(`Received Workflow ID: ${workflowId}`);
 
-        // Create a new execution
-        const execution = new Execution(workflowId);
-        execution.addJobs(jobData);
+        // // Fetch job data for the workflow
+        // const jobData = await getAllJobDataformWorkflowId(workflowId);
+        // if (!jobData.length) {
+        //   console.log(`No jobs found for Workflow ID: ${workflowId}`);
+        //   return;
+        // }
 
-        // Add execution to manager (runs in parallel with limit)
-        executionManager.addExecution(execution);
+        // // Create a new execution
+        // const execution = new Execution(workflowId);
+        // execution.addJobs(jobData);
+
+        // // Add execution to manager (runs in parallel with limit)
+        // executionManager.addExecution(execution);
       },
     });
   } catch (error) {

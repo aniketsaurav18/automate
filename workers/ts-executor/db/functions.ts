@@ -28,6 +28,7 @@ export const getAllJobDataformWorkflowId = async (workflowId: string) => {
   }
   const d = res.queryResult?.rows as any;
   console.log(d[1].data);
+  return d;
 };
 
 export async function updateJobResult(
@@ -103,3 +104,4 @@ export async function markExecutionFailed(
   }
   return res;
 }
+
