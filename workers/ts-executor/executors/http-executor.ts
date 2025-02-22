@@ -13,7 +13,7 @@ export async function executeHttpJob(job: HttpJobSchema) {
       url.searchParams.append(key, value as string);
     });
 
-    const config: AxiosRequestConfig = {
+    const config = {
       method: input.method,
       url: url.toString(),
       headers: input.headers,
