@@ -105,10 +105,12 @@ export function ConfigureStepModal({
     } else if (activeTab === "configure") {
       if (childref.current) {
         const jobData = childref.current.submitHandler();
-        setJobData(jobData);
+        if (jobData) {
+          setJobData(jobData);
+          setEnabledTabs((prev) => [...prev, "test"]);
+          setActiveTab("test");
+        }
       }
-      setEnabledTabs((prev) => [...prev, "test"]);
-      setActiveTab("test");
     } else {
       handleJobDataChange();
       onClose();

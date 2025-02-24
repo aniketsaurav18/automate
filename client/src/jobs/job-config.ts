@@ -2,15 +2,20 @@ import {
   ChevronsLeftRightEllipsis,
   Webhook,
   CalendarCheck,
+  Mail,
 } from "lucide-react";
 import { HttpForm } from "@/jobs/http/HttpConfigForm";
 import { ScheduleConfig } from "@/jobs/schedule/scheduleConfig";
 import { WebhookJobConfiguration } from "./webhook/WebHookConfig";
 import { createElement } from "react";
+import { EmailComposer } from "./email/EmailConfiguration";
+import { JobDataType } from "@/types";
+
+export type SupportedAppsType = Pick<JobDataType, "key">;
 
 export interface JobConfigType {
   id: number;
-  app: "http" | "webhook" | "schedule";
+  app: SupportedAppsType["key"];
   name: string;
   description: string;
   icon: (className?: string) => JSX.Element;
@@ -50,6 +55,15 @@ export const JobCongiguration: JobConfigType[] = [
       createElement(CalendarCheck, { className: className }),
     configForm: ScheduleConfig,
     trigger: true,
+  },
+  {
+    id: 4,
+    app: "email",
+    name: "Email",
+    description: "Send a e-mail through our email service.",
+    icon: (className?: string) => createElement(Mail, { className: className }),
+    configForm: EmailComposer,
+    trigger: false,
   },
 ];
 
