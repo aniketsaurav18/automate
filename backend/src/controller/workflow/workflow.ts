@@ -14,6 +14,7 @@ import { produceMessage } from "../../producer/producer";
 import { PRODUCER_KEY } from "../../producer";
 import prisma from "../../db";
 import { workerData } from "worker_threads";
+import { logger } from "../../utils/logger";
 
 // Controller function for creating a new workflow
 export const createNewWorkflowController = async (
@@ -46,7 +47,7 @@ export const createNewWorkflowController = async (
       data: safeData,
     });
   } catch (e) {
-    console.log(e);
+    logger.error(e);
     res.status(500).json({
       success: false,
       message: "Failed to create workflow",
@@ -72,7 +73,7 @@ export const getAllWorkflowDataController = async (
     const skip = query.skip ? parseInt(query.skip as string, 10) : null;
     const take = query.take ? parseInt(query.take as string, 10) : null;
 
-    console.log(skip, take);
+    logger.info(skip, take);
 
     const data = await db.workflow.findMany({
       where: {
@@ -95,7 +96,7 @@ export const getAllWorkflowDataController = async (
       safeParseData.push(p);
     }
 
-    console.log(safeParseData);
+    logger.info(safeParseData);
 
     res.status(200).json({
       success: true,
@@ -138,14 +139,14 @@ export const getWorkflowDataController = async (
       return;
     }
     const safeData = WorkflowResponseSchema.parse(data);
-    console.log(safeData);
+    logger.info(safeData);
     res.status(200).json({
       success: true,
       data: safeData,
     });
     return;
   } catch (err: any) {
-    console.log(err);
+    logger.error(err);
     res.status(500).json({
       success: false,
       message: "An unexpected error has occured.",
@@ -192,7 +193,7 @@ export const createWorkflowController = async (
       }
 
       // Create new jobs associated with the workflow
-      console.log("Jobs createworkflowcontroller:", jobs);
+      logger.info("Jobs createworkflowcontroller:", jobs);
       if (jobs) {
         await prisma.job.createMany({
           data: jobs.map(({ id, ...job }: JobCreateDataType) => ({
@@ -244,7 +245,7 @@ export const createWorkflowController = async (
         message: e.message,
       });
     } else {
-      console.error(e);
+      logger.error(e);
       res.status(500).json({
         success: false,
         message: "An error occurred.",
@@ -261,7 +262,7 @@ export const updateWorkflowController = async (
   const id = req.params.id;
   const userId = req.user?.id;
 
-  console.log(req.body);
+  logger.info(req.body);
 
   if (!userId) {
     res.status(403).json({ success: false, message: "Unauthorized" });
@@ -269,12 +270,12 @@ export const updateWorkflowController = async (
   }
 
   try {
-    console.log(req.body.jobs[0].data);
-    console.log(req.body.jobs[1].data);
+    logger.info(req.body.jobs[0].data);
+    logger.info(req.body.jobs[1].data);
     const parsedBody = WorkflowCreateSchema.safeParse(req.body);
     if (!parsedBody.success) {
       res.status(400).json({ success: false, message: "Invalid request data" });
-      console.log(parsedBody.error.issues[0]);
+      logger.error(parsedBody.error.issues[0]);
       return;
     }
     const { name, description, jobs } = parsedBody.data;
@@ -362,7 +363,7 @@ export const updateWorkflowController = async (
     });
     return;
   } catch (err: any) {
-    console.error("Error updating workflow:", err);
+    logger.error(err);
     res
       .status(500)
       .json({ success: false, message: "Error updating workflow." });
@@ -419,8 +420,8 @@ export const activateWorkflowController = async (
       },
     });
     return;
-  } catch (e) {
-    console.log(e);
+  } catch (e: any) {
+    logger.error(e);
     res.status(500).json({
       success: false,
       message: "Unexpected Error has happened.",
@@ -483,7 +484,7 @@ export const deactivateWorkflowController = async (
     });
     return;
   } catch (e) {
-    console.log(e);
+    logger.error(e);
     res.status(500).json({
       success: false,
       message: "Unexpected Error has happened.",

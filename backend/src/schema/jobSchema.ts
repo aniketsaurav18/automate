@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const Apps = z.enum(["http", "webhook", "schedule"]);
+export const Apps = z.enum(["http", "webhook", "schedule", "email"]);
 
 export const JobType = z.enum(["trigger", "action"]);
 
@@ -95,8 +95,8 @@ export const EmailJobSchema = z.object({
   }),
   output: z.object({
     success: z.boolean(),
-  })
-})
+  }),
+});
 
 export const JobDataSchema = z.discriminatedUnion("key", [
   HttpJobSchema,

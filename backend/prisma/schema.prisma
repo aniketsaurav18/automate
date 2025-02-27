@@ -119,6 +119,7 @@ enum Apps {
     http
     schedule
     webhook
+    email
 }
 
 enum JobType {
