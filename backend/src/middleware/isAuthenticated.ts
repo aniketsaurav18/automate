@@ -33,7 +33,7 @@ export const isAuthenticated = (
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET!);
-    console.log(payload);
+    // console.log(payload);
     req.user = payload as UserPayload;
     next();
   } catch (error) {
