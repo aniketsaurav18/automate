@@ -1,12 +1,13 @@
-import { executeHttpJob } from "./http-executor";
+import { HttpExecutor } from "./http-executor";
 import { JobDBSchema } from "../../../backend/src/schema";
+import { EmailExecutors } from "./email-executor";
 
 export const exeuteJob = (job: JobDBSchema) => {
   const jobType = job.app;
 
   switch (jobType) {
     case "http":
-      return executeHttpJob(job.data as any);
+      return HttpExecutor(job.data as any);
     case "webhook":
       return {
         key: "webhook",
@@ -19,6 +20,8 @@ export const exeuteJob = (job: JobDBSchema) => {
         success: true,
         result: "workflow got triggered successfully.",
       };
+    case "email":
+      return EmailExecutors(job.data as any);
     default:
       throw new Error(`Unsupported job type: ${jobType}`);
   }

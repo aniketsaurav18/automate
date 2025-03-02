@@ -3,7 +3,7 @@ import { HttpJobSchema } from "../../../backend/src/schema";
 import { executeHttpRequest } from "./common";
 
 // Function to execute an HTTP job
-export async function executeHttpJob(job: HttpJobSchema) {
+export async function HttpExecutor(job: HttpJobSchema) {
   const { input } = job;
 
   try {
@@ -50,7 +50,7 @@ export async function executeHttpJob(job: HttpJobSchema) {
         body: error.response?.data
           ? JSON.stringify(error.response.data)
           : error.message || "Unknown error occurred",
-      },
+      } as HttpJobSchema["output"],
     };
   }
 }

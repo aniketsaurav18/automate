@@ -14,6 +14,7 @@
     "axios": "^1.7.9",
     "dotenv": "^16.4.7",
     "kafkajs": "^2.2.4",
+    "node-mailjet": "^6.0.6",
     "pg": "^8.13.3"
   },
   "devDependencies": {
