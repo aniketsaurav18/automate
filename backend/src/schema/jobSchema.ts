@@ -93,9 +93,11 @@ export const EmailJobSchema = z.object({
     body: z.string(),
     attatchments: z.string().url().optional(),
   }),
-  output: z.object({
-    success: z.boolean(),
-  }),
+  output: z
+    .object({
+      success: z.boolean(),
+    })
+    .optional(),
 });
 
 export const JobDataSchema = z.discriminatedUnion("key", [

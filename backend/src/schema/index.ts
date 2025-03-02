@@ -4,6 +4,7 @@ import { Job } from "@prisma/client";
 import { z } from "zod";
 import { WorkflowSchema } from "./workflowSchema";
 import {
+  EmailJobSchema,
   HttpJobSchema,
   JobDataSchema,
   ScheduleSchema,
@@ -18,3 +19,4 @@ export type JobDBSchema = Job;
 export type HttpJobSchema = z.infer<typeof HttpJobSchema>;
 export type WebhookJobSchema = z.infer<typeof WebhookJobSchema>;
 export type ScheduleSchema = z.infer<typeof ScheduleSchema>;
+export type EmailJobSchemaType = z.infer<typeof EmailJobSchema>;
