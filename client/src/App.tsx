@@ -33,9 +33,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<SignupPage />} />
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-        </Route>
+        <Route path="/" element={<Home />}></Route>
         <Route path="/workflow" element={<Layout />}>
           <Route index element={<Workflows />} />
         </Route>
