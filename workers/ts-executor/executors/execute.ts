@@ -6,8 +6,6 @@ export const exeuteJob = (job: JobDBSchema) => {
   const jobType = job.app;
 
   switch (jobType) {
-    case "http":
-      return HttpExecutor(job.data as any);
     case "webhook":
       return {
         key: "webhook",
@@ -22,6 +20,8 @@ export const exeuteJob = (job: JobDBSchema) => {
       };
     case "email":
       return EmailExecutors(job.data as any);
+    case "http":
+      return HttpExecutor(job.data as any);
     default:
       throw new Error(`Unsupported job type: ${jobType}`);
   }

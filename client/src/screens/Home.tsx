@@ -2,13 +2,35 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, CheckCircle, Menu, X } from "lucide-react";
+import {
+  ArrowRight,
+  CheckCircle,
+  Menu,
+  X,
+  ZapIcon,
+  PuzzleIcon,
+  PlayIcon,
+  Slack,
+  Mail,
+  Calendar,
+  FileText,
+  Github,
+  Trello,
+  Instagram,
+  Twitter,
+  Linkedin,
+  Database,
+  BarChart4,
+  MessageSquare,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNavigate } from "react-router-dom";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const container = {
     hidden: { opacity: 0 },
@@ -30,6 +52,95 @@ export default function LandingPage() {
     hidden: { opacity: 0 },
     show: { opacity: 1, transition: { duration: 0.8 } },
   };
+
+  // Define popular app logos for integration section
+  const popularApps = [
+    { name: "Slack", icon: <Slack className="h-6 w-6" /> },
+    { name: "Gmail", icon: <Mail className="h-6 w-6" /> },
+    { name: "Calendar", icon: <Calendar className="h-6 w-6" /> },
+    { name: "Docs", icon: <FileText className="h-6 w-6" /> },
+    { name: "GitHub", icon: <Github className="h-6 w-6" /> },
+    { name: "Trello", icon: <Trello className="h-6 w-6" /> },
+    { name: "Instagram", icon: <Instagram className="h-6 w-6" /> },
+    { name: "Twitter", icon: <Twitter className="h-6 w-6" /> },
+    { name: "LinkedIn", icon: <Linkedin className="h-6 w-6" /> },
+    { name: "Database", icon: <Database className="h-6 w-6" /> },
+    { name: "Analytics", icon: <BarChart4 className="h-6 w-6" /> },
+    { name: "Chat", icon: <MessageSquare className="h-6 w-6" /> },
+  ];
+
+  // Define productivity apps
+  const productivityApps = [
+    { name: "Slack", icon: <Slack className="h-6 w-6" /> },
+    { name: "Trello", icon: <Trello className="h-6 w-6" /> },
+    { name: "Github", icon: <Github className="h-6 w-6" /> },
+    { name: "Docs", icon: <FileText className="h-6 w-6" /> },
+    { name: "Calendar", icon: <Calendar className="h-6 w-6" /> },
+    { name: "Mail", icon: <Mail className="h-6 w-6" /> },
+    { name: "Database", icon: <Database className="h-6 w-6" /> },
+    { name: "Analytics", icon: <BarChart4 className="h-6 w-6" /> },
+    { name: "Chat", icon: <MessageSquare className="h-6 w-6" /> },
+    { name: "Files", icon: <FileText className="h-6 w-6" /> },
+    { name: "Projects", icon: <PuzzleIcon className="h-6 w-6" /> },
+    { name: "Tasks", icon: <CheckCircle className="h-6 w-6" /> },
+  ];
+
+  // Define marketing apps
+  const marketingApps = [
+    { name: "Instagram", icon: <Instagram className="h-6 w-6" /> },
+    { name: "Twitter", icon: <Twitter className="h-6 w-6" /> },
+    { name: "LinkedIn", icon: <Linkedin className="h-6 w-6" /> },
+    { name: "Mail", icon: <Mail className="h-6 w-6" /> },
+    { name: "Analytics", icon: <BarChart4 className="h-6 w-6" /> },
+    { name: "Chat", icon: <MessageSquare className="h-6 w-6" /> },
+    { name: "Content", icon: <FileText className="h-6 w-6" /> },
+    { name: "Calendar", icon: <Calendar className="h-6 w-6" /> },
+    { name: "Projects", icon: <PuzzleIcon className="h-6 w-6" /> },
+    { name: "Tasks", icon: <CheckCircle className="h-6 w-6" /> },
+    { name: "Database", icon: <Database className="h-6 w-6" /> },
+    { name: "Files", icon: <FileText className="h-6 w-6" /> },
+  ];
+
+  // Define sales apps
+  const salesApps = [
+    { name: "Mail", icon: <Mail className="h-6 w-6" /> },
+    { name: "Calendar", icon: <Calendar className="h-6 w-6" /> },
+    { name: "Chat", icon: <MessageSquare className="h-6 w-6" /> },
+    { name: "Documents", icon: <FileText className="h-6 w-6" /> },
+    { name: "LinkedIn", icon: <Linkedin className="h-6 w-6" /> },
+    { name: "Analytics", icon: <BarChart4 className="h-6 w-6" /> },
+    { name: "Tasks", icon: <CheckCircle className="h-6 w-6" /> },
+    { name: "Projects", icon: <PuzzleIcon className="h-6 w-6" /> },
+    { name: "Database", icon: <Database className="h-6 w-6" /> },
+    { name: "Files", icon: <FileText className="h-6 w-6" /> },
+    { name: "Trello", icon: <Trello className="h-6 w-6" /> },
+    { name: "Github", icon: <Github className="h-6 w-6" /> },
+  ];
+
+  // How it works steps with icons
+  const howItWorksSteps = [
+    {
+      title: "1. Choose your trigger",
+      description:
+        "Select the event that starts your automation workflow, like receiving an email or a new form submission.",
+      icon: <ZapIcon className="h-12 w-12 text-primary" />,
+      image: "/placeholder.svg?height=200&width=300&text=Step 1",
+    },
+    {
+      title: "2. Add actions",
+      description:
+        "Define what happens when your trigger is activated. Add multiple steps to create powerful workflows.",
+      icon: <PuzzleIcon className="h-12 w-12 text-primary" />,
+      image: "/placeholder.svg?height=200&width=300&text=Step 2",
+    },
+    {
+      title: "3. Go live",
+      description:
+        "Activate your workflow and let FlowConnect handle the rest. Monitor performance in real-time.",
+      icon: <PlayIcon className="h-12 w-12 text-primary" />,
+      image: "/placeholder.svg?height=200&width=300&text=Step 3",
+    },
+  ];
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -71,10 +182,10 @@ export default function LandingPage() {
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
-            <a href="#" className="text-sm font-medium hover:text-primary">
+            <a href="/login" className="text-sm font-medium hover:text-primary">
               Log in
             </a>
-            <Button>Start for free</Button>
+            <Button onClick={() => navigate("/signup")}>Start for free</Button>
           </div>
 
           {/* Mobile Menu Button */}
@@ -118,7 +229,9 @@ export default function LandingPage() {
                 <a href="#" className="text-sm font-medium hover:text-primary">
                   Log in
                 </a>
-                <Button>Start for free</Button>
+                <Button onClick={() => navigate("/signup")}>
+                  Start for free
+                </Button>
               </div>
             </nav>
           </motion.div>
@@ -143,7 +256,7 @@ export default function LandingPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
-                className="flex flex-col justify-center space-y-8"
+                className="flex flex-col justify-center space-y-8 lg:w-full"
               >
                 <div className="space-y-4">
                   <motion.h1
@@ -170,9 +283,13 @@ export default function LandingPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.6 }}
-                  className="flex flex-col gap-4 sm:flex-row"
+                  className="flex flex-col gap-4 sm:flex-row lg:w-full"
                 >
-                  <Button size="lg" className="gap-2">
+                  <Button
+                    size="lg"
+                    className="gap-2"
+                    onClick={() => navigate("/workflow")}
+                  >
                     Start for free <ArrowRight className="h-4 w-4" />
                   </Button>
                   <Button size="lg" variant="outline">
@@ -212,7 +329,7 @@ export default function LandingPage() {
                   </div>
                   <div className="p-4">
                     <img
-                      src="/placeholder.svg?height=400&width=600"
+                      src="/hero-flow-image.png"
                       width={600}
                       height={400}
                       alt="FlowConnect Dashboard"
@@ -239,15 +356,18 @@ export default function LandingPage() {
                 Trusted by 10,000+ businesses
               </h2>
               <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-6">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
+                {[
+                  <Slack className="h-8 w-8" />,
+                  <Github className="h-8 w-8" />,
+                  <Trello className="h-8 w-8" />,
+                  <Mail className="h-8 w-8" />,
+                  <Calendar className="h-8 w-8" />,
+                  <FileText className="h-8 w-8" />,
+                ].map((logo, i) => (
                   <div key={i} className="flex items-center justify-center">
-                    <img
-                      src={`/placeholder.svg?height=40&width=120&text=LOGO ${i}`}
-                      width={120}
-                      height={40}
-                      alt={`Company logo ${i}`}
-                      className="opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0"
-                    />
+                    <div className="flex h-12 w-12 items-center justify-center opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0">
+                      {logo}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -378,26 +498,7 @@ export default function LandingPage() {
 
             <div className="mt-16">
               <div className="grid gap-8 md:grid-cols-3">
-                {[
-                  {
-                    title: "1. Choose your trigger",
-                    description:
-                      "Select the event that starts your automation workflow, like receiving an email or a new form submission.",
-                    image: "/placeholder.svg?height=200&width=300&text=Step 1",
-                  },
-                  {
-                    title: "2. Add actions",
-                    description:
-                      "Define what happens when your trigger is activated. Add multiple steps to create powerful workflows.",
-                    image: "/placeholder.svg?height=200&width=300&text=Step 2",
-                  },
-                  {
-                    title: "3. Go live",
-                    description:
-                      "Activate your workflow and let FlowConnect handle the rest. Monitor performance in real-time.",
-                    image: "/placeholder.svg?height=200&width=300&text=Step 3",
-                  },
-                ].map((step, index) => (
+                {howItWorksSteps.map((step, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
@@ -414,13 +515,16 @@ export default function LandingPage() {
                         viewport={{ once: true }}
                         className="absolute -inset-4 -z-10 rounded-full bg-primary/5"
                       ></motion.div>
-                      <img
-                        src={step.image || "/placeholder.svg"}
-                        width={300}
-                        height={200}
-                        alt={step.title}
-                        className="rounded-lg"
-                      />
+                      <div className="flex flex-col items-center">
+                        {step.icon}
+                        {/* <img
+                          src={step.image || "/placeholder.svg"}
+                          width={300}
+                          height={200}
+                          alt={step.title}
+                          className="mt-4 rounded-lg"
+                        /> */}
+                      </div>
                     </div>
                     <h3 className="mb-2 text-xl font-bold">{step.title}</h3>
                     <p className="text-muted-foreground">{step.description}</p>
@@ -480,7 +584,7 @@ export default function LandingPage() {
                 </div>
                 <TabsContent value="popular" className="mt-8">
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-                    {Array.from({ length: 12 }).map((_, i) => (
+                    {popularApps.map((app, i) => (
                       <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 10 }}
@@ -491,23 +595,16 @@ export default function LandingPage() {
                         className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md"
                       >
                         <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted">
-                          <img
-                            src={`/placeholder.svg?height=40&width=40&text=${
-                              i + 1
-                            }`}
-                            width={40}
-                            height={40}
-                            alt={`Integration ${i + 1}`}
-                          />
+                          {app.icon}
                         </div>
-                        <span className="text-sm font-medium">App {i + 1}</span>
+                        <span className="text-sm font-medium">{app.name}</span>
                       </motion.div>
                     ))}
                   </div>
                 </TabsContent>
                 <TabsContent value="productivity" className="mt-8">
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-                    {Array.from({ length: 12 }).map((_, i) => (
+                    {productivityApps.map((app, i) => (
                       <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 10 }}
@@ -518,25 +615,16 @@ export default function LandingPage() {
                         className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md"
                       >
                         <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted">
-                          <img
-                            src={`/placeholder.svg?height=40&width=40&text=P${
-                              i + 1
-                            }`}
-                            width={40}
-                            height={40}
-                            alt={`Productivity App ${i + 1}`}
-                          />
+                          {app.icon}
                         </div>
-                        <span className="text-sm font-medium">
-                          Prod {i + 1}
-                        </span>
+                        <span className="text-sm font-medium">{app.name}</span>
                       </motion.div>
                     ))}
                   </div>
                 </TabsContent>
                 <TabsContent value="marketing" className="mt-8">
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-                    {Array.from({ length: 12 }).map((_, i) => (
+                    {marketingApps.map((app, i) => (
                       <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 10 }}
@@ -547,25 +635,16 @@ export default function LandingPage() {
                         className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md"
                       >
                         <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted">
-                          <img
-                            src={`/placeholder.svg?height=40&width=40&text=M${
-                              i + 1
-                            }`}
-                            width={40}
-                            height={40}
-                            alt={`Marketing App ${i + 1}`}
-                          />
+                          {app.icon}
                         </div>
-                        <span className="text-sm font-medium">
-                          Mktg {i + 1}
-                        </span>
+                        <span className="text-sm font-medium">{app.name}</span>
                       </motion.div>
                     ))}
                   </div>
                 </TabsContent>
                 <TabsContent value="sales" className="mt-8">
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-                    {Array.from({ length: 12 }).map((_, i) => (
+                    {salesApps.map((app, i) => (
                       <motion.div
                         key={i}
                         initial={{ opacity: 0, y: 10 }}
@@ -576,18 +655,9 @@ export default function LandingPage() {
                         className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md"
                       >
                         <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted">
-                          <img
-                            src={`/placeholder.svg?height=40&width=40&text=S${
-                              i + 1
-                            }`}
-                            width={40}
-                            height={40}
-                            alt={`Sales App ${i + 1}`}
-                          />
+                          {app.icon}
                         </div>
-                        <span className="text-sm font-medium">
-                          Sales {i + 1}
-                        </span>
+                        <span className="text-sm font-medium">{app.name}</span>
                       </motion.div>
                     ))}
                   </div>
@@ -891,63 +961,21 @@ export default function LandingPage() {
                   className="text-muted-foreground hover:text-foreground"
                 >
                   <span className="sr-only">Twitter</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                  </svg>
+                  <Twitter className="h-5 w-5" />
                 </a>
                 <a
                   href="#"
                   className="text-muted-foreground hover:text-foreground"
                 >
                   <span className="sr-only">LinkedIn</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                    <rect width="4" height="12" x="2" y="9"></rect>
-                    <circle cx="4" cy="4" r="2"></circle>
-                  </svg>
+                  <Linkedin className="h-5 w-5" />
                 </a>
                 <a
                   href="#"
                   className="text-muted-foreground hover:text-foreground"
                 >
                   <span className="sr-only">GitHub</span>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="h-5 w-5"
-                  >
-                    <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path>
-                    <path d="M9 18c-4.51 2-5-2-7-2"></path>
-                  </svg>
+                  <Github className="h-5 w-5" />
                 </a>
               </div>
             </div>
