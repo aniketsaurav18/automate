@@ -27,6 +27,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -145,7 +146,7 @@ export default function LandingPage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Header */}
-      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <header className="sticky top-0 z-40 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 dark:bg-gray-900/80 dark:supports-[backdrop-filter]:bg-gray-900/60 dark:border-gray-700">
         <div className="container flex h-16 items-center justify-between">
           <div className="flex items-center gap-2">
             <motion.div
@@ -153,44 +154,70 @@ export default function LandingPage() {
               animate={{ rotate: 0, scale: 1 }}
               transition={{ type: "spring", stiffness: 200 }}
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-                <span className="text-lg font-bold text-primary-foreground">
+              <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary dark:bg-primary-light">
+                <span className="text-lg font-bold text-primary-foreground dark:text-gray-900">
                   F
                 </span>
               </div>
             </motion.div>
-            <span className="text-xl font-bold">FlowConnect</span>
+            <span className="text-xl font-bold text-gray-900 dark:text-white">
+              FlowConnect
+            </span>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
-            <a href="#" className="text-sm font-medium hover:text-primary">
+            <a
+              href="#"
+              className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+            >
               Features
             </a>
-            <a href="#" className="text-sm font-medium hover:text-primary">
+            <a
+              href="#"
+              className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+            >
               Integrations
             </a>
-            <a href="#" className="text-sm font-medium hover:text-primary">
+            <a
+              href="#"
+              className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+            >
               Pricing
             </a>
-            <a href="#" className="text-sm font-medium hover:text-primary">
+            <a
+              href="#"
+              className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+            >
               Templates
             </a>
-            <a href="#" className="text-sm font-medium hover:text-primary">
+            <a
+              href="#"
+              className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+            >
               Resources
             </a>
           </nav>
 
           <div className="hidden md:flex items-center gap-4">
-            <a href="/login" className="text-sm font-medium hover:text-primary">
+            <a
+              href="/login"
+              className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+            >
               Log in
             </a>
-            <Button onClick={() => navigate("/signup")}>Start for free</Button>
+            <Button
+              onClick={() => navigate("/signup")}
+              className="dark:bg-primary-light dark:text-gray-900"
+            >
+              Start for free
+            </Button>
+            <ModeToggle />
           </div>
 
           {/* Mobile Menu Button */}
           <button
-            className="flex items-center justify-center rounded-md p-2 md:hidden"
+            className="flex items-center justify-center rounded-md p-2 md:hidden text-gray-900 dark:text-gray-300"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
             {isMenuOpen ? (
@@ -210,26 +237,47 @@ export default function LandingPage() {
             className="container pb-4 md:hidden"
           >
             <nav className="flex flex-col gap-4">
-              <a href="#" className="text-sm font-medium hover:text-primary">
+              <a
+                href="#"
+                className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+              >
                 Features
               </a>
-              <a href="#" className="text-sm font-medium hover:text-primary">
+              <a
+                href="#"
+                className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+              >
                 Integrations
               </a>
-              <a href="#" className="text-sm font-medium hover:text-primary">
+              <a
+                href="#"
+                className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+              >
                 Pricing
               </a>
-              <a href="#" className="text-sm font-medium hover:text-primary">
+              <a
+                href="#"
+                className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+              >
                 Templates
               </a>
-              <a href="#" className="text-sm font-medium hover:text-primary">
+              <a
+                href="#"
+                className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+              >
                 Resources
               </a>
               <div className="flex flex-col gap-2 pt-2">
-                <a href="#" className="text-sm font-medium hover:text-primary">
+                <a
+                  href="/login"
+                  className="text-sm font-medium text-gray-700 hover:text-primary dark:text-gray-300 dark:hover:text-primary-light"
+                >
                   Log in
                 </a>
-                <Button onClick={() => navigate("/signup")}>
+                <Button
+                  onClick={() => navigate("/signup")}
+                  className="dark:bg-primary-light dark:text-gray-900"
+                >
                   Start for free
                 </Button>
               </div>
@@ -240,14 +288,14 @@ export default function LandingPage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative overflow-hidden py-20 md:py-32">
+        <section className="relative overflow-hidden py-20 md:py-32 bg-white dark:bg-gray-900">
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 0.1, scale: 1 }}
             transition={{ duration: 1.5 }}
             className="absolute inset-0 -z-10"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 dark:from-primary/30 dark:to-secondary/30 [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]"></div>
           </motion.div>
 
           <div className="container">
@@ -263,16 +311,18 @@ export default function LandingPage() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.2 }}
-                    className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl"
+                    className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl text-gray-900 dark:text-white"
                   >
                     Automate your workflow{" "}
-                    <span className="text-primary">without code</span>
+                    <span className="text-primary dark:text-primary-light">
+                      without code
+                    </span>
                   </motion.h1>
                   <motion.p
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: 0.4 }}
-                    className="max-w-[600px] text-muted-foreground md:text-xl"
+                    className="max-w-[600px] text-gray-600 dark:text-gray-300 md:text-xl"
                   >
                     Connect your apps and automate workflows in minutes. No
                     coding required. FlowConnect makes it easy to connect the
@@ -287,12 +337,16 @@ export default function LandingPage() {
                 >
                   <Button
                     size="lg"
-                    className="gap-2"
+                    className="gap-2 bg-primary text-white dark:bg-primary-light dark:text-gray-900"
                     onClick={() => navigate("/workflow")}
                   >
                     Start for free <ArrowRight className="h-4 w-4" />
                   </Button>
-                  <Button size="lg" variant="outline">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="dark:border-gray-600 dark:text-gray-300"
+                  >
                     Watch demo
                   </Button>
                 </motion.div>
@@ -300,15 +354,15 @@ export default function LandingPage() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: 0.5, delay: 0.8 }}
-                  className="flex items-center gap-2 text-sm text-muted-foreground"
+                  className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400"
                 >
-                  <CheckCircle className="h-4 w-4 text-primary" />
+                  <CheckCircle className="h-4 w-4 text-primary dark:text-primary-light" />
                   <span>No credit card required</span>
                   <span className="mx-2">•</span>
-                  <CheckCircle className="h-4 w-4 text-primary" />
+                  <CheckCircle className="h-4 w-4 text-primary dark:text-primary-light" />
                   <span>Free plan available</span>
                   <span className="mx-2">•</span>
-                  <CheckCircle className="h-4 w-4 text-primary" />
+                  <CheckCircle className="h-4 w-4 text-primary dark:text-primary-light" />
                   <span>Cancel anytime</span>
                 </motion.div>
               </motion.div>
@@ -319,8 +373,8 @@ export default function LandingPage() {
                 transition={{ duration: 0.7, delay: 0.5 }}
                 className="relative flex items-center justify-center lg:justify-end"
               >
-                <div className="relative w-full max-w-[500px] overflow-hidden rounded-xl border bg-background shadow-xl">
-                  <div className="flex h-12 items-center border-b bg-muted/50 px-4">
+                <div className="relative w-full max-w-[500px] overflow-hidden rounded-xl border bg-white dark:bg-gray-800 dark:border-gray-700 shadow-xl">
+                  <div className="flex h-12 items-center border-b bg-gray-100 dark:bg-gray-700 px-4">
                     <div className="flex gap-2">
                       <div className="h-3 w-3 rounded-full bg-red-500"></div>
                       <div className="h-3 w-3 rounded-full bg-yellow-500"></div>
@@ -343,7 +397,7 @@ export default function LandingPage() {
         </section>
 
         {/* Logos Section */}
-        <section className="border-y bg-muted/40 py-12">
+        <section className="border-y bg-muted/40 py-12 dark:bg-gray-800 dark:border-gray-700">
           <div className="container">
             <motion.div
               initial={{ opacity: 0 }}
@@ -352,17 +406,17 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="flex flex-col items-center justify-center gap-8"
             >
-              <h2 className="text-center text-sm font-medium uppercase tracking-wider text-muted-foreground">
+              <h2 className="text-center text-sm font-medium uppercase tracking-wider text-muted-foreground dark:text-gray-400">
                 Trusted by 10,000+ businesses
               </h2>
               <div className="grid grid-cols-2 gap-8 md:grid-cols-3 lg:grid-cols-6">
                 {[
-                  <Slack className="h-8 w-8" />,
-                  <Github className="h-8 w-8" />,
-                  <Trello className="h-8 w-8" />,
-                  <Mail className="h-8 w-8" />,
-                  <Calendar className="h-8 w-8" />,
-                  <FileText className="h-8 w-8" />,
+                  <Slack className="h-8 w-8 text-gray-600 dark:text-gray-300" />,
+                  <Github className="h-8 w-8 text-gray-600 dark:text-gray-300" />,
+                  <Trello className="h-8 w-8 text-gray-600 dark:text-gray-300" />,
+                  <Mail className="h-8 w-8 text-gray-600 dark:text-gray-300" />,
+                  <Calendar className="h-8 w-8 text-gray-600 dark:text-gray-300" />,
+                  <FileText className="h-8 w-8 text-gray-600 dark:text-gray-300" />,
                 ].map((logo, i) => (
                   <div key={i} className="flex items-center justify-center">
                     <div className="flex h-12 w-12 items-center justify-center opacity-70 grayscale transition-all hover:opacity-100 hover:grayscale-0">
@@ -376,7 +430,7 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section */}
-        <section className="py-20 md:py-32">
+        <section className="py-20 md:py-32 dark:bg-gray-900">
           <div className="container">
             <motion.div
               initial="hidden"
@@ -387,19 +441,19 @@ export default function LandingPage() {
             >
               <motion.div
                 variants={item}
-                className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
+                className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm text-primary dark:bg-primary/20 dark:text-primary-light"
               >
                 Features
               </motion.div>
               <motion.h2
                 variants={item}
-                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-gray-900 dark:text-white"
               >
                 Everything you need to automate your work
               </motion.h2>
               <motion.p
                 variants={item}
-                className="max-w-[800px] text-muted-foreground md:text-xl"
+                className="max-w-[800px] text-muted-foreground md:text-xl dark:text-gray-400"
               >
                 FlowConnect helps you connect your favorite apps and automate
                 workflows in minutes. No coding required.
@@ -452,13 +506,17 @@ export default function LandingPage() {
                   transition={{ duration: 0.5, delay: index * 0.1 }}
                   viewport={{ once: true }}
                   whileHover={{ y: -5 }}
-                  className="group rounded-xl border bg-background p-6 shadow-sm transition-all hover:shadow-md"
+                  className="group rounded-xl border bg-background p-6 shadow-sm transition-all hover:shadow-md dark:bg-gray-800 dark:border-gray-700"
                 >
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-2xl">
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-2xl dark:bg-primary/20">
                     {feature.icon}
                   </div>
-                  <h3 className="mb-2 text-xl font-bold">{feature.title}</h3>
-                  <p className="text-muted-foreground">{feature.description}</p>
+                  <h3 className="mb-2 text-xl font-bold text-gray-900 dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground dark:text-gray-400">
+                    {feature.description}
+                  </p>
                 </motion.div>
               ))}
             </div>
@@ -466,7 +524,7 @@ export default function LandingPage() {
         </section>
 
         {/* How It Works Section */}
-        <section className="border-y bg-muted/30 py-20 md:py-32">
+        <section className="border-y bg-muted/30 py-20 md:py-32 dark:bg-gray-900">
           <div className="container">
             <motion.div
               initial="hidden"
@@ -477,19 +535,19 @@ export default function LandingPage() {
             >
               <motion.div
                 variants={item}
-                className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
+                className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm text-primary dark:bg-primary/20 dark:text-primary-light"
               >
                 How It Works
               </motion.div>
               <motion.h2
                 variants={item}
-                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl dark:text-white"
               >
                 Automate in three simple steps
               </motion.h2>
               <motion.p
                 variants={item}
-                className="max-w-[800px] text-muted-foreground md:text-xl"
+                className="max-w-[800px] text-muted-foreground md:text-xl dark:text-gray-400"
               >
                 Get started with FlowConnect in minutes. No technical skills
                 required.
@@ -513,21 +571,18 @@ export default function LandingPage() {
                         whileInView={{ scale: 1, opacity: 1 }}
                         transition={{ duration: 0.5, delay: index * 0.2 + 0.3 }}
                         viewport={{ once: true }}
-                        className="absolute -inset-4 -z-10 rounded-full bg-primary/5"
+                        className="absolute -inset-4 -z-10 rounded-full bg-primary/5 dark:bg-primary/15"
                       ></motion.div>
                       <div className="flex flex-col items-center">
                         {step.icon}
-                        {/* <img
-                          src={step.image || "/placeholder.svg"}
-                          width={300}
-                          height={200}
-                          alt={step.title}
-                          className="mt-4 rounded-lg"
-                        /> */}
                       </div>
                     </div>
-                    <h3 className="mb-2 text-xl font-bold">{step.title}</h3>
-                    <p className="text-muted-foreground">{step.description}</p>
+                    <h3 className="mb-2 text-xl font-bold dark:text-white">
+                      {step.title}
+                    </h3>
+                    <p className="text-muted-foreground dark:text-gray-400">
+                      {step.description}
+                    </p>
                   </motion.div>
                 ))}
               </div>
@@ -536,7 +591,7 @@ export default function LandingPage() {
         </section>
 
         {/* Integrations Section */}
-        <section className="py-20 md:py-32">
+        <section className="py-20 md:py-32 dark:bg-gray-900">
           <div className="container">
             <motion.div
               initial="hidden"
@@ -547,19 +602,19 @@ export default function LandingPage() {
             >
               <motion.div
                 variants={item}
-                className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
+                className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm text-primary dark:bg-primary/20 dark:text-primary-light"
               >
                 Integrations
               </motion.div>
               <motion.h2
                 variants={item}
-                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl dark:text-white"
               >
                 Connect with your favorite apps
               </motion.h2>
               <motion.p
                 variants={item}
-                className="max-w-[800px] text-muted-foreground md:text-xl"
+                className="max-w-[800px] text-muted-foreground md:text-xl dark:text-gray-400"
               >
                 FlowConnect integrates with 1,000+ apps and services, so you can
                 automate your entire tech stack.
@@ -575,7 +630,7 @@ export default function LandingPage() {
             >
               <Tabs defaultValue="popular" className="w-full">
                 <div className="flex justify-center">
-                  <TabsList>
+                  <TabsList className="dark:bg-gray-800">
                     <TabsTrigger value="popular">Popular</TabsTrigger>
                     <TabsTrigger value="productivity">Productivity</TabsTrigger>
                     <TabsTrigger value="marketing">Marketing</TabsTrigger>
@@ -592,16 +647,19 @@ export default function LandingPage() {
                         transition={{ duration: 0.3, delay: i * 0.05 }}
                         viewport={{ once: true }}
                         whileHover={{ y: -5 }}
-                        className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md"
+                        className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
                       >
-                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted dark:bg-gray-700">
                           {app.icon}
                         </div>
-                        <span className="text-sm font-medium">{app.name}</span>
+                        <span className="text-sm font-medium dark:text-white">
+                          {app.name}
+                        </span>
                       </motion.div>
                     ))}
                   </div>
                 </TabsContent>
+
                 <TabsContent value="productivity" className="mt-8">
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                     {productivityApps.map((app, i) => (
@@ -612,16 +670,19 @@ export default function LandingPage() {
                         transition={{ duration: 0.3, delay: i * 0.05 }}
                         viewport={{ once: true }}
                         whileHover={{ y: -5 }}
-                        className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md"
+                        className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
                       >
-                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted dark:bg-gray-700">
                           {app.icon}
                         </div>
-                        <span className="text-sm font-medium">{app.name}</span>
+                        <span className="text-sm font-medium dark:text-white">
+                          {app.name}
+                        </span>
                       </motion.div>
                     ))}
                   </div>
                 </TabsContent>
+
                 <TabsContent value="marketing" className="mt-8">
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                     {marketingApps.map((app, i) => (
@@ -632,16 +693,19 @@ export default function LandingPage() {
                         transition={{ duration: 0.3, delay: i * 0.05 }}
                         viewport={{ once: true }}
                         whileHover={{ y: -5 }}
-                        className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md"
+                        className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
                       >
-                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted dark:bg-gray-700">
                           {app.icon}
                         </div>
-                        <span className="text-sm font-medium">{app.name}</span>
+                        <span className="text-sm font-medium dark:text-white">
+                          {app.name}
+                        </span>
                       </motion.div>
                     ))}
                   </div>
                 </TabsContent>
+
                 <TabsContent value="sales" className="mt-8">
                   <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
                     {salesApps.map((app, i) => (
@@ -652,12 +716,14 @@ export default function LandingPage() {
                         transition={{ duration: 0.3, delay: i * 0.05 }}
                         viewport={{ once: true }}
                         whileHover={{ y: -5 }}
-                        className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md"
+                        className="flex flex-col items-center justify-center gap-2 rounded-lg border bg-background p-4 shadow-sm transition-all hover:shadow-md dark:border-gray-700 dark:bg-gray-800"
                       >
-                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted">
+                        <div className="flex h-12 w-12 items-center justify-center rounded-md bg-muted dark:bg-gray-700">
                           {app.icon}
                         </div>
-                        <span className="text-sm font-medium">{app.name}</span>
+                        <span className="text-sm font-medium dark:text-white">
+                          {app.name}
+                        </span>
                       </motion.div>
                     ))}
                   </div>
@@ -666,7 +732,11 @@ export default function LandingPage() {
             </motion.div>
 
             <div className="mt-12 flex justify-center">
-              <Button variant="outline" size="lg" className="gap-2">
+              <Button
+                variant="outline"
+                size="lg"
+                className="gap-2 dark:border-gray-600 dark:text-white"
+              >
                 View all integrations <ArrowRight className="h-4 w-4" />
               </Button>
             </div>
@@ -674,7 +744,7 @@ export default function LandingPage() {
         </section>
 
         {/* Pricing Section */}
-        <section className="border-y bg-muted/30 py-20 md:py-32">
+        <section className="border-y bg-muted/30 dark:bg-gray-900 py-20 md:py-32">
           <div className="container">
             <motion.div
               initial="hidden"
@@ -685,19 +755,19 @@ export default function LandingPage() {
             >
               <motion.div
                 variants={item}
-                className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
+                className="inline-block rounded-full bg-primary/10 dark:bg-primary/20 px-3 py-1 text-sm text-primary dark:text-primary-background"
               >
                 Pricing
               </motion.div>
               <motion.h2
                 variants={item}
-                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-foreground dark:text-primary-background"
               >
                 Simple, transparent pricing
               </motion.h2>
               <motion.p
                 variants={item}
-                className="max-w-[800px] text-muted-foreground md:text-xl"
+                className="max-w-[800px] text-muted-foreground dark:text-muted-backgrond"
               >
                 Choose the plan that's right for you and start automating your
                 workflows today.
@@ -760,13 +830,15 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.2 }}
                   viewport={{ once: true }}
-                  className={`relative rounded-xl border ${
-                    plan.popular ? "border-primary shadow-lg" : "shadow-sm"
-                  } bg-background`}
+                  className={`relative rounded-xl border bg-background dark:bg-gray-800 text-foreground dark:text-primary-background ${
+                    plan.popular
+                      ? "border-primary shadow-lg dark:border-primary/70"
+                      : "shadow-sm"
+                  }`}
                 >
                   {plan.popular && (
                     <div className="absolute -top-4 left-0 right-0 flex justify-center">
-                      <span className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
+                      <span className="rounded-full bg-primary dark:bg-primary/80 px-3 py-1 text-xs font-medium text-primary-foreground dark:text-primary-background">
                         Most Popular
                       </span>
                     </div>
@@ -775,23 +847,25 @@ export default function LandingPage() {
                     <h3 className="text-2xl font-bold">{plan.title}</h3>
                     <div className="mt-4 flex items-baseline">
                       <span className="text-4xl font-bold">{plan.price}</span>
-                      <span className="ml-1 text-muted-foreground">/month</span>
+                      <span className="ml-1 text-muted-foreground dark:text-slate-100">
+                        /month
+                      </span>
                     </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
+                    <p className="mt-2 text-sm text-muted-foreground dark:text-slate-100">
                       {plan.description}
                     </p>
                     <ul className="mt-6 space-y-3">
                       {plan.features.map((feature, i) => (
                         <li key={i} className="flex items-center gap-2">
-                          <CheckCircle className="h-5 w-5 text-primary" />
+                          <CheckCircle className="h-5 w-5 text-primary dark:text-primary/80" />
                           <span>{feature}</span>
                         </li>
                       ))}
                     </ul>
                     <div className="mt-8">
                       <Button
-                        variant={plan.popular ? "default" : "outline"}
-                        className="w-full"
+                        // variant={"outline"}
+                        className="w-full dark:bg-slate-600 dark:border-primary dark:text-primary dark:hover:bg-primary/20"
                         size="lg"
                       >
                         {plan.cta}
@@ -805,7 +879,7 @@ export default function LandingPage() {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-20 md:py-32">
+        <section className="border-y bg-muted/30 dark:bg-gray-900 py-20 md:py-32">
           <div className="container">
             <motion.div
               initial="hidden"
@@ -816,95 +890,90 @@ export default function LandingPage() {
             >
               <motion.div
                 variants={item}
-                className="inline-block rounded-full bg-primary/10 px-3 py-1 text-sm text-primary"
+                className="inline-block rounded-full bg-primary/10 dark:bg-primary/20 px-3 py-1 text-sm text-primary dark:text-primary-background"
               >
                 Testimonials
               </motion.div>
               <motion.h2
                 variants={item}
-                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl"
+                className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-foreground dark:text-primary-background"
               >
                 Loved by businesses worldwide
               </motion.h2>
               <motion.p
                 variants={item}
-                className="max-w-[800px] text-muted-foreground md:text-xl"
+                className="max-w-[800px] text-muted-foreground dark:text-muted-primary-background"
               >
                 See what our customers have to say about how FlowConnect has
                 transformed their workflows.
               </motion.p>
             </motion.div>
 
-            <div className="mt-16">
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                {[
-                  {
-                    quote:
-                      "FlowConnect has saved our team countless hours of manual work. We've automated our entire customer onboarding process and it's been a game-changer.",
-                    author: "Sarah Johnson",
-                    role: "Operations Manager",
-                    company: "TechCorp Inc.",
-                    avatar: "/placeholder.svg?height=60&width=60",
-                  },
-                  {
-                    quote:
-                      "The ease of use is what sets FlowConnect apart. I was able to set up complex workflows without any technical knowledge. Their support team is also incredibly helpful.",
-                    author: "Michael Chen",
-                    role: "Marketing Director",
-                    company: "GrowthLabs",
-                    avatar: "/placeholder.svg?height=60&width=60",
-                  },
-                  {
-                    quote:
-                      "We've reduced our manual data entry by 85% since implementing FlowConnect. The ROI has been incredible, and we're just getting started with automation.",
-                    author: "Emily Rodriguez",
-                    role: "CTO",
-                    company: "Innovate Solutions",
-                    avatar: "/placeholder.svg?height=60&width=60",
-                  },
-                ].map((testimonial, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.2 }}
-                    viewport={{ once: true }}
-                    className="rounded-xl border bg-background p-6 shadow-sm"
-                  >
-                    <div className="flex flex-col gap-4">
-                      <div className="relative">
-                        <span className="absolute -left-2 -top-2 text-4xl text-primary">
-                          "
-                        </span>
-                        <p className="pt-4 text-muted-foreground">
-                          {testimonial.quote}
+            <div className="mt-16 grid gap-8 md:grid-cols-3">
+              {[
+                {
+                  quote:
+                    "FlowConnect has saved our team countless hours of manual work. We've automated our entire customer onboarding process and it's been a game-changer.",
+                  author: "Sarah Johnson",
+                  role: "Operations Manager",
+                  company: "TechCorp Inc.",
+                  avatar: "/placeholder.svg?height=60&width=60",
+                },
+                {
+                  quote:
+                    "The ease of use is what sets FlowConnect apart. I was able to set up complex workflows without any technical knowledge. Their support team is also incredibly helpful.",
+                  author: "Michael Chen",
+                  role: "Marketing Director",
+                  company: "GrowthLabs",
+                  avatar: "/placeholder.svg?height=60&width=60",
+                },
+                {
+                  quote:
+                    "We've reduced our manual data entry by 85% since implementing FlowConnect. The ROI has been incredible, and we're just getting started with automation.",
+                  author: "Emily Rodriguez",
+                  role: "CTO",
+                  company: "Innovate Solutions",
+                  avatar: "/placeholder.svg?height=60&width=60",
+                },
+              ].map((testimonial, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.2 }}
+                  viewport={{ once: true }}
+                  className="relative rounded-xl border bg-background dark:bg-muted/50 text-foreground dark:text-primary-foreground shadow-sm"
+                >
+                  <div className="p-6">
+                    <p className="text-muted-foreground dark:text-muted-primary-background">
+                      {testimonial.quote}
+                    </p>
+                    <div className="mt-4 flex items-center gap-4">
+                      <img
+                        src={testimonial.avatar}
+                        width={60}
+                        height={60}
+                        alt={testimonial.author}
+                        className="rounded-full border dark:border-primary/70"
+                      />
+                      <div>
+                        <h4 className="font-bold dark:text-slate-200">
+                          {testimonial.author}
+                        </h4>
+                        <p className="text-sm text-muted-foreground dark:text-muted-primary-background">
+                          {testimonial.role}, {testimonial.company}
                         </p>
                       </div>
-                      <div className="mt-4 flex items-center gap-4">
-                        <img
-                          src={testimonial.avatar || "/placeholder.svg"}
-                          width={60}
-                          height={60}
-                          alt={testimonial.author}
-                          className="rounded-full"
-                        />
-                        <div>
-                          <h4 className="font-bold">{testimonial.author}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            {testimonial.role}, {testimonial.company}
-                          </p>
-                        </div>
-                      </div>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
           </div>
         </section>
 
         {/* CTA Section */}
-        <section className="border-t bg-muted/30 py-20 md:py-32">
+        <section className="border-t bg-muted/30 dark:bg-gray-900 py-20 md:py-32">
           <div className="container">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -914,23 +983,30 @@ export default function LandingPage() {
               className="flex flex-col items-center gap-8 text-center"
             >
               <div className="space-y-4">
-                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                <h2 className="text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl text-foreground dark:text-white">
                   Ready to automate your workflows?
                 </h2>
-                <p className="mx-auto max-w-[600px] text-muted-foreground md:text-xl">
+                <p className="mx-auto max-w-[600px] text-muted-foreground dark:text-gray-300 md:text-xl">
                   Join thousands of businesses that use FlowConnect to save
                   time, reduce errors, and focus on what matters most.
                 </p>
               </div>
               <div className="flex flex-col gap-4 sm:flex-row">
-                <Button size="lg" className="gap-2">
+                <Button
+                  size="lg"
+                  className="gap-2 dark:bg-primary dark:text-black dark:hover:bg-primary/80"
+                >
                   Start your free trial <ArrowRight className="h-4 w-4" />
                 </Button>
-                <Button size="lg" variant="outline">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+                >
                   Schedule a demo
                 </Button>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground dark:text-gray-400">
                 No credit card required. 14-day free trial.
               </p>
             </motion.div>
@@ -939,7 +1015,7 @@ export default function LandingPage() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t bg-muted/40 py-12 md:py-16">
+      <footer className="border-t bg-muted/40 dark:bg-gray-800 py-12 md:py-16">
         <div className="container">
           <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
             <div className="flex flex-col gap-4">
@@ -949,203 +1025,119 @@ export default function LandingPage() {
                     F
                   </span>
                 </div>
-                <span className="text-xl font-bold">FlowConnect</span>
+                <span className="text-xl font-bold text-foreground dark:text-white">
+                  FlowConnect
+                </span>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground dark:text-gray-400">
                 Automate your workflows without code. Connect your favorite apps
                 and services in minutes.
               </p>
               <div className="flex gap-4">
                 <a
                   href="#"
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white"
                 >
-                  <span className="sr-only">Twitter</span>
                   <Twitter className="h-5 w-5" />
                 </a>
                 <a
                   href="#"
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white"
                 >
-                  <span className="sr-only">LinkedIn</span>
                   <Linkedin className="h-5 w-5" />
                 </a>
                 <a
                   href="#"
-                  className="text-muted-foreground hover:text-foreground"
+                  className="text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white"
                 >
-                  <span className="sr-only">GitHub</span>
                   <Github className="h-5 w-5" />
                 </a>
               </div>
             </div>
             <div>
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground dark:text-white">
                 Product
               </h3>
               <ul className="space-y-2">
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Integrations
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Pricing
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Templates
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Security
-                  </a>
-                </li>
+                {[
+                  "Features",
+                  "Integrations",
+                  "Pricing",
+                  "Templates",
+                  "Security",
+                ].map((item) => (
+                  <li key={item}>
+                    <a
+                      href="#"
+                      className="text-sm text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
             <div>
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground dark:text-white">
                 Resources
               </h3>
               <ul className="space-y-2">
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Blog
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Guides
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Support Center
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    API Reference
-                  </a>
-                </li>
+                {[
+                  "Blog",
+                  "Documentation",
+                  "Guides",
+                  "Support Center",
+                  "API Reference",
+                ].map((item) => (
+                  <li key={item}>
+                    <a
+                      href="#"
+                      className="text-sm text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
               </ul>
             </div>
             <div>
-              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider">
+              <h3 className="mb-4 text-sm font-semibold uppercase tracking-wider text-foreground dark:text-white">
                 Company
               </h3>
               <ul className="space-y-2">
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    About
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Careers
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Contact
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Partners
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="#"
-                    className="text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Legal
-                  </a>
-                </li>
+                {["About", "Careers", "Contact", "Partners", "Legal"].map(
+                  (item) => (
+                    <li key={item}>
+                      <a
+                        href="#"
+                        className="text-sm text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white"
+                      >
+                        {item}
+                      </a>
+                    </li>
+                  )
+                )}
               </ul>
             </div>
           </div>
-          <div className="mt-12 border-t pt-8">
+          <div className="mt-12 border-t pt-8 border-gray-300 dark:border-gray-700">
             <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm text-muted-foreground dark:text-gray-400">
                 &copy; {new Date().getFullYear()} FlowConnect. All rights
                 reserved.
               </p>
               <div className="flex gap-4">
-                <a
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-foreground"
-                >
-                  Privacy Policy
-                </a>
-                <a
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-foreground"
-                >
-                  Terms of Service
-                </a>
-                <a
-                  href="#"
-                  className="text-sm text-muted-foreground hover:text-foreground"
-                >
-                  Cookie Policy
-                </a>
+                {["Privacy Policy", "Terms of Service", "Cookie Policy"].map(
+                  (item) => (
+                    <a
+                      key={item}
+                      href="#"
+                      className="text-sm text-muted-foreground dark:text-gray-400 hover:text-foreground dark:hover:text-white"
+                    >
+                      {item}
+                    </a>
+                  )
+                )}
               </div>
             </div>
           </div>
