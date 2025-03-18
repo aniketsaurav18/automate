@@ -6,6 +6,7 @@ import {
   MoreVertical,
   Plus,
   Search,
+  Trash,
   Trash2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,17 @@ import {
   addWorkflows,
   updateWorkflowActiveStatus,
 } from "@/store/slice/workflow";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 // Custom purple theme
 const purpleTheme = {
@@ -116,6 +128,41 @@ export default function Workflows() {
       toast({
         title: "Error",
         description: err.message ?? "An unexpected error happened.",
+      });
+    }
+  };
+
+  const handleDeleteWorkflow = async (workflowId: string) => {
+    try {
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/workflow/${workflowId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${user?.token}`,
+          },
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        // dispatch(deleteWorkflow(workflowId));
+        toast({
+          title: "Deleted",
+          description: "Workflow deleted successfully",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: data.message || "An unexpected error occurred.",
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred.",
       });
     }
   };
@@ -347,8 +394,32 @@ export default function Workflows() {
                     className="data-[state=checked]:bg-purple-600 data-[state=unchecked]:bg-gray-300 data-[state=unchecked]:dark:bg-neutral-400 [&>*]:bg-white"
                   />
                 </TableCell>
-
-                <TableCell className="gap-0 p-0">
+                {/* utilities buttons and dropdown */}
+                <TableCell className="gap-0 p-0 flex flex-row">
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="icon">
+                        <Trash className="h-4 w-4 text-red-600" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Are you sure you want to delete this workflow? This
+                          action cannot be undone.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDeleteWorkflow(workflow.id)}
+                        >
+                          Delete
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                   <Button variant="ghost" size="icon">
                     <MoreVertical className="h-4 w-4" />
                   </Button>

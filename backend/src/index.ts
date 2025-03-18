@@ -1,6 +1,9 @@
 import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 dotenv.config();
+
+process.env.GOOGLE_CLIENT_ID = "fadfasdfasdfadsfa";
+
 import cors from "cors";
 import db from "./db";
 import morgan from "morgan";
@@ -44,7 +47,7 @@ const PORT = process.env.PORT || 3000;
     console.log("Database connected");
 
     // Initialize Kafka producer
-    await initializeKafka();
+    // await initializeKafka();
     console.log("Kafka producer connected");
 
     app.listen(PORT, () => {

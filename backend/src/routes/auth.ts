@@ -120,4 +120,78 @@ authRouter.post(
   }
 );
 
+import { OAuth2Client } from "google-auth-library";
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+authRouter.post(
+  "/google-login",
+  async (req: Request, res: Response): Promise<any> => {
+    try {
+      const { token } = req.body;
+
+      if (!token) {
+        return res.status(400).json({
+          success: false,
+          message: "Google token is required.",
+        });
+      }
+
+      const ticket = await googleClient.verifyIdToken({
+        idToken: token,
+        audience: process.env.GOOGLE_CLIENT_ID,
+      });
+
+      const payload = ticket.getPayload();
+      const email = payload?.email;
+      const name = payload?.name;
+
+      if (!email) {
+        return res.status(400).json({
+          success: false,
+          message: "Email not found in Google token.",
+        });
+      }
+
+      let user = await db.user.findFirst({
+        where: {
+          email,
+        },
+      });
+
+      if (!user) {
+        user = await db.user.create({
+          data: {
+            email,
+            name: name || email.split("@")[0],
+            password: "", // Set a default password
+          },
+        });
+      }
+
+      const jwtPayload = {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      };
+
+      const jwtToken = jwt.sign(jwtPayload, process.env.JWT_SECRET!, {
+        expiresIn: "30d",
+      });
+
+      return res.status(200).json({
+        ...jwtPayload,
+        token: jwtToken,
+        success: true,
+      });
+    } catch (error) {
+      console.error("Error in google login:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Internal server error.",
+      });
+    }
+  }
+);
+
 export default authRouter;

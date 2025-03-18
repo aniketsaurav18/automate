@@ -371,6 +371,61 @@ export const updateWorkflowController = async (
   }
 };
 
+// DELETE /api/workflow/:id
+export const deleteWorkflwoController = async (req: Request, res: Response) => {
+  const workflowId = req.params.id;
+  const userId = req.user?.id;
+
+  if (!userId) {
+    res.status(401).json({
+      success: false,
+      message: "Invalid request.",
+    });
+    return;
+  }
+
+  try {
+    const workflow = await db.workflow.findFirst({
+      where: {
+        id: workflowId,
+        owner_id: userId,
+      },
+    });
+
+    if (!workflow) {
+      res.status(404).json({
+        success: false,
+        message: "Workflow not found.",
+      });
+      return;
+    }
+
+    await db.workflow.delete({
+      where: {
+        id: workflowId,
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Workflow deleted successfully.",
+    });
+
+    await db.execution.deleteMany({
+      where: {
+        workflow_id: workflowId,
+        status: "pending",
+      },
+    });
+  } catch (error: any) {
+    logger.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete workflow.",
+    });
+  }
+};
+
 // PUT /:id/activate
 export const activateWorkflowController = async (
   req: Request,

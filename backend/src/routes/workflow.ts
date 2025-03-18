@@ -21,6 +21,8 @@ workflowRouter.post("/:id", createWorkflowController);
 
 workflowRouter.put("/:id", updateWorkflowController);
 
+workflowRouter.delete("/:id", deleteWorkflwoController);
+
 workflowRouter.put("/:id/activate", activateWorkflowController);
 
 workflowRouter.put("/:id/deactivate", deactivateWorkflowController);
