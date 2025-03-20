@@ -1,4 +1,5 @@
 import { ReadOnlyInput } from "@/components/readonly-input";
+import { useAppSelector } from "@/store/hook";
 import { JobDataType } from "@/types";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 
@@ -10,10 +11,20 @@ interface WebhookJobConfigurationProps {
 
 export const WebhookJobConfiguration = forwardRef(
   ({ jobData }: WebhookJobConfigurationProps, ref) => {
-    const [url, setUrl] = useState<string>("https://example.com");
+    const [url, setUrl] = useState<string>("");
+    const activeWorkflow = useAppSelector(
+      (state) => state.workflow.activeWorkflow
+    );
 
     useEffect(() => {
-      if (!jobData) return;
+      if (!jobData) {
+        setUrl(
+          `${import.meta.env.VITE_BACKEND_URL}/webhook/trigger/${
+            activeWorkflow?.id
+          }`
+        );
+        return;
+      }
       const data = jobData as WebhookJobDataType;
       setUrl(data.input.webhookUrl);
     }, [jobData]);

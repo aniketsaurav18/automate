@@ -4,6 +4,7 @@ import {
   createNewWorkflowController,
   createWorkflowController,
   deactivateWorkflowController,
+  deleteWorkflwoController,
   getAllWorkflowDataController,
   getWorkflowDataController,
   updateWorkflowController,

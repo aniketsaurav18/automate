@@ -36,6 +36,7 @@ import { WorkflowType } from "@/types";
 import { useAppDispatch, useAppSelector } from "@/store/hook";
 import {
   addWorkflows,
+  deleteWorkflow,
   updateWorkflowActiveStatus,
 } from "@/store/slice/workflow";
 import {
@@ -147,7 +148,7 @@ export default function Workflows() {
       const data = await res.json();
 
       if (data.success) {
-        // dispatch(deleteWorkflow(workflowId));
+        dispatch(deleteWorkflow(workflowId));
         toast({
           title: "Deleted",
           description: "Workflow deleted successfully",

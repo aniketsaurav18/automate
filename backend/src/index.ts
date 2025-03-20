@@ -12,6 +12,7 @@ import authRouter from "./routes/auth";
 import workflowRouter from "./routes/workflow";
 import { isAuthenticated } from "./middleware/isAuthenticated";
 import { initializeKafka, producer } from "./producer";
+import webhookRouter from "./routes/webhook";
 
 const app: Express = express();
 
@@ -37,6 +38,7 @@ app.get("/", (req: Request, res: Response) => {
 // Routes
 app.use("/auth", authRouter);
 app.use("/api/workflow", isAuthenticated, workflowRouter);
+app.use("/webhook", webhookRouter);
 
 const PORT = process.env.PORT || 3000;
 
