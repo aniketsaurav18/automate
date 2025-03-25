@@ -9,8 +9,15 @@ import {
   getWorkflowDataController,
   updateWorkflowController,
 } from "../controller/workflow/workflow";
+import {
+  getWorkflowStatsController,
+  getWorkflowHistoryController,
+} from "../controller/workflow/workflow";
 
 const workflowRouter = Router();
+
+workflowRouter.get("/stats", getWorkflowStatsController);
+workflowRouter.get("/history", getWorkflowHistoryController);
 
 workflowRouter.post("/new", createNewWorkflowController);
 

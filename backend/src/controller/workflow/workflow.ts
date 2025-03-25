@@ -55,6 +55,136 @@ export const createNewWorkflowController = async (
   }
 };
 
+export const getWorkflowHistoryController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const userId = req.user?.id;
+  if (!userId) {
+    res.status(401).json({
+      success: false,
+      message: "Invalid request.",
+    });
+  }
+  try {
+    const workflowHistory = await db.execution.findMany({
+      where: {
+        workflow_id: {
+          in: await db.workflow
+            .findMany({
+              where: {
+                owner_id: userId,
+              },
+              select: {
+                id: true,
+              },
+            })
+            .then((workflows) => workflows.map((workflow) => workflow.id)),
+        },
+      },
+      orderBy: {
+        created_at: "desc",
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: "Workflow history fetched",
+      data: workflowHistory,
+    });
+  } catch (e) {
+    logger.error(e);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch workflow history",
+    });
+  }
+};
+
+export const getWorkflowStatsController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const userId = req.user?.id;
+
+  console.log(userId);
+
+  if (!userId) {
+    res.status(401).json({
+      success: false,
+      message: "Invalid request.",
+    });
+    return;
+  }
+
+  try {
+    const totalWorkflows = await db.workflow.count({
+      where: {
+        owner_id: userId,
+      },
+    });
+
+    const activeWorkflows = await db.workflow.count({
+      where: {
+        owner_id: userId,
+        active: true,
+      },
+    });
+
+    const pendingExecutions = await db.execution.count({
+      where: {
+        workflow_id: {
+          in: await db.workflow
+            .findMany({
+              where: {
+                owner_id: userId,
+              },
+              select: {
+                id: true,
+              },
+            })
+            .then((workflows) => workflows.map((workflow) => workflow.id)),
+        },
+        status: "pending",
+      },
+    });
+
+    const executedWorkflows = await db.execution.count({
+      where: {
+        workflow_id: {
+          in: await db.workflow
+            .findMany({
+              where: {
+                owner_id: userId,
+              },
+              select: {
+                id: true,
+              },
+            })
+            .then((workflows) => workflows.map((workflow) => workflow.id)),
+        },
+        status: "completed",
+      },
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        totalWorkflows,
+        activeWorkflows,
+        pendingExecutions,
+        executedWorkflows,
+      },
+    });
+  } catch (error: any) {
+    logger.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch workflow statistics.",
+    });
+  }
+};
+
 /*
  * Get all workflows without the job data.
  * GET /all

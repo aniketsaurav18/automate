@@ -29,7 +29,7 @@ import { NavUser } from "./nav-user";
 const items = [
   {
     title: "Home",
-    url: "/",
+    url: "/home",
     icon: Home,
   },
   {

@@ -22,11 +22,12 @@ export const isAuthenticated = (
   next: NextFunction
 ): void => {
   const token = req.headers.authorization?.split(" ")[1];
+  console.log("token::", token);
 
   if (!token) {
     res.status(401).json({
       success: false,
-      message: "Unauthorized",
+      message: "No auth token provided",
     });
     return;
   }
@@ -37,6 +38,7 @@ export const isAuthenticated = (
     req.user = payload as UserPayload;
     next();
   } catch (error) {
+    console.log("Error verifying token:", error);
     res.status(401).json({
       success: false,
       message: "Unauthorized",
