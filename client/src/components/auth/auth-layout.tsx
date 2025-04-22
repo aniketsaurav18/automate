@@ -15,7 +15,7 @@ interface AuthLayoutProps {
 
 export function AuthLayout({ children, title, description }: AuthLayoutProps) {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center dark:bg-stone-950 px-4 py-12 sm:px-6 lg:px-8">
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">

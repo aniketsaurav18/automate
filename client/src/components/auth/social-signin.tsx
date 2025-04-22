@@ -1,18 +1,48 @@
 import { Button } from "@/components/ui/button";
-import { Github } from "lucide-react";
 
-interface SocialSignInProps {
-  onGoogleSignIn: () => void;
-  onGithubSignIn: () => void;
-}
+import {
+  useGoogleLogin,
+  TokenResponse,
+  CodeResponse,
+} from "@react-oauth/google"; // Import CodeResponse type
 
-export function SocialSignIn({
-  onGoogleSignIn,
-  onGithubSignIn,
-}: SocialSignInProps) {
+export function SocialSignIn() {
+  const login = useGoogleLogin({
+    flow: "auth-code",
+    // The redirect_uri should typically be 'postmessage' for SPAs
+    // This tells Google to send the authorization code back to the calling window via postMessage
+    redirect_uri: "postmessage", // Make sure this is configured in your Google Cloud Console
+    // Optionally request offline access if you need refresh tokens
+    // access_type: 'offline', // uncomment if needed
+
+    onSuccess: async (codeResponse: CodeResponse) => {
+      // Expect CodeResponse now
+      console.log("Authorization Code Response:", codeResponse);
+      // Send the 'code' to your backend
+      const res = await fetch(
+        `${import.meta.env.VITE_BACKEND_URL}/auth/google-login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code: codeResponse.code, // Send the authorization code
+          }),
+        }
+      );
+      const data = await res.json();
+      console.log("Backend Response:", data);
+      // Handle successful login from your backend response (e.g., store JWT)
+    },
+    onError: (errorResponse) => {
+      // Use errorResponse for more details
+      console.error("Login Failed:", errorResponse);
+    },
+  });
   return (
     <div className="grid grid-cols-2 gap-4">
-      <Button variant="outline" onClick={onGoogleSignIn} className="w-full">
+      <Button variant="outline" onClick={() => login()} className="w-full">
         <svg
           className="mr-2 h-4 w-4"
           aria-hidden="true"
@@ -30,10 +60,10 @@ export function SocialSignIn({
         </svg>
         Google
       </Button>
-      <Button variant="outline" onClick={onGithubSignIn} className="w-full">
+      {/* <Button variant="outline" onClick={() => login()} className="w-full">
         <Github className="mr-2 h-4 w-4" />
         GitHub
-      </Button>
+      </Button> */}
     </div>
   );
 }
