@@ -49,10 +49,10 @@ export default function LandingPage() {
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300 } },
   };
 
-  const fadeIn = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { duration: 0.8 } },
-  };
+  // const fadeIn = {
+  //   hidden: { opacity: 0 },
+  //   show: { opacity: 1, transition: { duration: 0.8 } },
+  // };
 
   // Define popular app logos for integration section
   const popularApps = [

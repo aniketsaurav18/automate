@@ -8,7 +8,7 @@ import { useUser } from "@/providers/user-provider";
 import { updateActiveWorkflow } from "@/store/slice/workflow/workflowState";
 import { setActiveWorkflowTitle } from "@/store/slice/workflow";
 
-export function WorkflowCanvas() {
+function WorkflowCanvas() {
   const { user, userStateLoading } = useUser();
   const { toast } = useToast();
   const { workflowId } = useParams();
@@ -174,3 +174,5 @@ export function WorkflowCanvas() {
     </>
   );
 }
+
+export default WorkflowCanvas;

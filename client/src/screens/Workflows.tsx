@@ -1,6 +1,5 @@
 import {
   Filter,
-  Folder,
   CloudLightningIcon as Lightning,
   Mail,
   MoreVertical,
@@ -25,7 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
@@ -364,7 +363,7 @@ export default function Workflows() {
                   <div className="flex gap-1">
                     {workflow.apps.length == 0
                       ? "Not Configured"
-                      : workflow.apps.map((app: string, index: number) => {
+                      : workflow.apps.map((_app: string, index: number) => {
                           const Icon: React.ComponentType<{
                             className?: string;
                           }> = Mail;

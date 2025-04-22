@@ -1,10 +1,6 @@
 import { Button } from "@/components/ui/button";
 
-import {
-  useGoogleLogin,
-  TokenResponse,
-  CodeResponse,
-} from "@react-oauth/google"; // Import CodeResponse type
+import { useGoogleLogin, CodeResponse } from "@react-oauth/google"; // Import CodeResponse type
 
 export function SocialSignIn() {
   const login = useGoogleLogin({

@@ -53,17 +53,6 @@ export default function SignupPage() {
       setIsLoading(false);
     }
   };
-
-  const handleGoogleSignIn = () => {
-    console.log("Google sign-in clicked");
-    // Implement Google sign-in logic here
-  };
-
-  const handleGithubSignIn = () => {
-    console.log("GitHub sign-in clicked");
-    // Implement GitHub sign-in logic here
-  };
-
   return (
     <AuthLayout
       title="Create an account"
@@ -72,8 +61,6 @@ export default function SignupPage() {
       <AuthForm
         type="signup"
         onSubmit={handleSubmit}
-        onGoogleSignIn={handleGoogleSignIn}
-        onGithubSignIn={handleGithubSignIn}
         error={error || undefined}
         isLoading={isLoading}
       />
