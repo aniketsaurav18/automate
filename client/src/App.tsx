@@ -1,18 +1,15 @@
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/toaster";
 import { AppSidebar } from "@/components/AppSidebar";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Outlet,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import LoginPage from "./screens/Login";
+import SignupPage from "./screens/Signup";
 
 // Lazy load all route components
 const LandingPage = lazy(() => import("@/screens/Landing"));
-const LoginPage = lazy(() => import("@/screens/Login"));
-const SignupPage = lazy(() => import("@/screens/Signup"));
+// const LoginPage = lazy(() => import("@/screens/Login"));
+// const SignupPage = lazy(() => import("@/screens/Signup"));
 const Workflows = lazy(() => import("@/screens/Workflows"));
 const WorkflowStatistics = lazy(() => import("@/screens/Home"));
 const WorkflowCanvas = lazy(() => import("@/screens/WorkflowCanvas"));
@@ -39,7 +36,7 @@ function Layout() {
 
 export default function App() {
   return (
-    <Router>
+    <BrowserRouter>
       <Suspense fallback={<Loading />}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
@@ -55,6 +52,6 @@ export default function App() {
           </Route>
         </Routes>
       </Suspense>
-    </Router>
+    </BrowserRouter>
   );
 }

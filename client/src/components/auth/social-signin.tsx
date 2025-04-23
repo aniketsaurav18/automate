@@ -37,7 +37,7 @@ export function SocialSignIn() {
     },
   });
   return (
-    <div className="grid grid-cols-2 gap-4">
+    <div className="w-full">
       <Button variant="outline" onClick={() => login()} className="w-full">
         <svg
           className="mr-2 h-4 w-4"
@@ -56,10 +56,6 @@ export function SocialSignIn() {
         </svg>
         Google
       </Button>
-      {/* <Button variant="outline" onClick={() => login()} className="w-full">
-        <Github className="mr-2 h-4 w-4" />
-        GitHub
-      </Button> */}
     </div>
   );
 }
