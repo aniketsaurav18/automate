@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -28,10 +28,18 @@ import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNavigate } from "react-router-dom";
 import { ModeToggle } from "@/components/mode-toggle";
+import { useUser } from "@/providers/user-provider";
 
 export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated, userStateLoading } = useUser();
+
+  useEffect(() => {
+    if (!userStateLoading && isAuthenticated) {
+      navigate("/home", { replace: true });
+    }
+  }, [isAuthenticated, userStateLoading, navigate]);
 
   const container = {
     hidden: { opacity: 0 },

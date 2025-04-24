@@ -1,10 +1,11 @@
-import { createElement, useEffect, useState, FC } from "react";
+"use client";
+
+import { createElement, useEffect, useState, type FC } from "react";
 import { Plus, MoreVertical, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader } from "@/components/ui/card";
 import { ConfigureStepModal } from "./ConfigureStepModal";
 import { JobCongiguration } from "@/jobs/job-config";
-import { JobType, WorkflowType } from "@/types";
+import type { JobType, WorkflowType } from "@/types";
 
 const Tail = ({
   onClick,
@@ -20,7 +21,7 @@ const Tail = ({
         <Button
           variant="outline"
           size="icon"
-          className="rounded-full border-2 border-blue-500 bg-white hover:bg-blue-50"
+          className="!rounded-full border-2 border-blue-500 bg-white hover:bg-blue-50"
           onClick={onClick}
         >
           <Plus className="h-4 w-4 text-blue-500" />
@@ -53,11 +54,14 @@ const StepCard: FC<StepCardProps> = ({
 
   return (
     <>
-      <Card
-        className="w-full mb-2 border-none shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer"
+      <div
+        className="w-full mb-2 border-none shadow-md hover:shadow-lg transition-shadow duration-200 cursor-pointer rounded-lg overflow-hidden"
         onClick={handleCardClick}
       >
-        <CardHeader className="flex flex-row items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-white rounded-lg">
+        <div
+          className="flex flex-row items-center justify-between p-4 bg-gradient-to-r from-blue-50 to-white"
+          id="step-card"
+        >
           <div className="flex items-center space-x-4">
             <div className="bg-white p-2 rounded-full shadow-sm dark:text-black">
               {data.icon}
@@ -84,8 +88,8 @@ const StepCard: FC<StepCardProps> = ({
               <MoreVertical className="h-5 w-5" />
             </Button>
           </div>
-        </CardHeader>
-      </Card>
+        </div>
+      </div>
       <Tail onClick={addStep} showPlus={showPlus} />
       <ConfigureStepModal
         isOpen={isModalOpen}

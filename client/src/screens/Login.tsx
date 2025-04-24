@@ -43,7 +43,7 @@ export default function LoginPage() {
           id: data.id,
           avatarUrl: data.avatarUrl ?? "",
         });
-        window.location.href = "/";
+        window.location.href = "/home";
       } else {
         setError(data.message || "An error occurred");
       }

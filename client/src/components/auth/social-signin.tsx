@@ -29,7 +29,18 @@ export function SocialSignIn() {
       );
       const data = await res.json();
       console.log("Backend Response:", data);
-      // Handle successful login from your backend response (e.g., store JWT)
+
+      if (data.success) {
+        // Store user data and token in local storage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data));
+
+        // Redirect to /home
+        window.location.href = "/home";
+      } else {
+        console.error("Login Failed:", data.message);
+        // Optionally display an error message to the user
+      }
     },
     onError: (errorResponse) => {
       // Use errorResponse for more details

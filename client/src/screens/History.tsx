@@ -111,7 +111,7 @@ const History = () => {
         Workflow History
       </h1>
 
-      <div className="grid gap-4 p-4">
+      <div className="grid gap-4 p-4 h-screen">
         {history && history.length > 0 ? (
           history.map((item) => (
             <Card
@@ -292,7 +292,7 @@ const History = () => {
             </Card>
           ))
         ) : (
-          <div className="flex flex-col items-center justify-center p-8 text-center">
+          <div className="flex flex-col items-center  p-2 text-center">
             <p className="text-muted-foreground">No history available.</p>
           </div>
         )}

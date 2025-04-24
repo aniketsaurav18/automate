@@ -5,8 +5,10 @@ import { Link } from "react-router-dom";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { AuthForm } from "@/components/auth/auth-form";
 import { Button } from "@/components/ui/button";
+import { useUser } from "@/providers/user-provider";
 
 export default function SignupPage() {
+  const { login } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -42,8 +44,14 @@ export default function SignupPage() {
       );
       const data = await res.json();
       if (data.success) {
-        console.log("Signup successful");
-        window.location.href = "/";
+        login({
+          name: data.name ?? "User",
+          email: data.email,
+          token: data.token,
+          id: data.id,
+          avatarUrl: data.avatarUrl ?? "",
+        });
+        window.location.href = "/home";
       } else {
         setError(data.message || "An error occurred");
       }
