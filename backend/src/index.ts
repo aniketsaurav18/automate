@@ -2,8 +2,6 @@ import express, { Express, Request, Response } from "express";
 import dotenv from "dotenv";
 dotenv.config();
 
-process.env.GOOGLE_CLIENT_ID = "fadfasdfasdfadsfa";
-
 import cors from "cors";
 import db from "./db";
 import morgan from "morgan";

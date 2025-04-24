@@ -2,8 +2,17 @@ import db from "../db";
 import { Router, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { OAuth2Client } from "google-auth-library";
 
 const authRouter = Router();
+
+export interface UserPayloadResponse {
+  id: string;
+  email: string;
+  name: string;
+  avatarUrl: string;
+  token: string;
+}
 
 authRouter.post("/login", async (req: Request, res: Response): Promise<any> => {
   const { email, password } = req.body;
@@ -49,9 +58,16 @@ authRouter.post("/login", async (req: Request, res: Response): Promise<any> => {
     expiresIn: "30d",
   });
 
-  return res.status(201).json({
-    ...payload,
+  const responsePayload: UserPayloadResponse = {
+    id: user.id,
+    email: user.email,
+    name: user.name ?? "",
+    avatarUrl: "",
     token,
+  };
+
+  return res.status(201).json({
+    ...responsePayload,
     success: true,
   });
 });
@@ -100,15 +116,18 @@ authRouter.post(
         expiresIn: "30d",
       });
 
+      const responsePayload: UserPayloadResponse = {
+        id: newUser.id,
+        email: newUser.email,
+        name: newUser.name ?? "",
+        avatarUrl: "",
+        token,
+      };
+
       return res.status(201).json({
         success: true,
         message: "User created successfully.",
-        user: {
-          id: newUser.id,
-          email: newUser.email,
-          name: newUser.name,
-        },
-        token,
+        ...responsePayload,
       });
     } catch (error) {
       console.error("Error in signup:", error);
@@ -119,10 +138,6 @@ authRouter.post(
     }
   }
 );
-
-import { OAuth2Client } from "google-auth-library"; // Ensure this is imported
-
-console.log(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET);
 
 // Configure the OAuth2Client with redirect_uri
 const googleClient = new OAuth2Client(
@@ -282,10 +297,17 @@ authRouter.post(
         expiresIn: "30d", // Token expires in 30 days
       });
 
+      const responsePayload: UserPayloadResponse = {
+        id: user.id,
+        email: user.email,
+        name: user.name ?? "",
+        avatarUrl: user.avatar_url ?? "",
+        token: jwtToken,
+      };
+
       // 6. Send response to the frontend
       return res.status(200).json({
-        ...jwtPayload,
-        token: jwtToken, // Your application's JWT
+        ...responsePayload,
         success: true,
       });
     } catch (error) {
