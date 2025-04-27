@@ -76,7 +76,3 @@ A set of distributed worker services responsible for executing scheduled tasks. 
 ## Contributing
 Pull requests and issues are welcome! Please open an issue to discuss any major changes.
 
----
-
-## License
-[MIT](LICENSE)
