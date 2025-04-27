@@ -14,6 +14,8 @@ services:
       - kafka1
       - zoo1
     restart: unless-stopped
+    networks:
+      - automate-net
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
       interval: 30s
@@ -29,7 +31,7 @@ services:
 
   ts-executor:
     build:
-      context: ../workers/ts-executor
+      context: ../
       dockerfile: Dockerfile
     image: automate-ts-executor:latest
     env_file:
@@ -37,6 +39,8 @@ services:
     depends_on:
       - backend
       - kafka1
+    networks:
+      - automate-net
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pgrep -f 'node|ts-executor' || exit 1"]
@@ -62,6 +66,8 @@ services:
     depends_on:
       - backend
       - kafka1
+    networks:
+      - automate-net
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pgrep -f 'node|schedular' || exit 1"]
@@ -87,6 +93,8 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
+    networks:
+      - automate-net
     healthcheck:
       test: ["CMD", "zkServer.sh", "status"]
       interval: 30s
@@ -104,13 +112,14 @@ services:
     image: confluentinc/cp-kafka:7.3.2
     hostname: kafka1
     ports:
-      - "9092:9092"
+      - "19092:19092"
       - "29092:29092"
       - "9999:9999"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:19092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092,DOCKER://host.docker.internal:29092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT,DOCKER:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:19092,EXTERNAL://${DOSTAGE_IP:-kafka1}:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:19092,EXTERNAL://0.0.0.0:9092
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181"
       KAFKA_BROKER_ID: 1
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
@@ -124,6 +133,8 @@ services:
       KAFKA_CREATE_TOPICS: "create-execution:3:1,execution:3:1"
     depends_on:
       - zoo1
+    networks:
+      - automate-net
     healthcheck:
       test:
         [
@@ -144,33 +155,17 @@ services:
         reservations:
           memory: 1G
 
-  kafdrop:
-    image: obsidiandynamics/kafdrop
-    ports:
-      - "9000:9000"
-    environment:
-      KAFKA_BROKERCONNECT: "kafka1:19092"
-      JVM_OPTS: "-Xms32M -Xmx64M"
-      SERVER_SERVLET_CONTEXTPATH: "/"
-    depends_on:
-      - kafka1
-    deploy:
-      resources:
-        limits:
-          cpus: "0.25"
-          memory: 128M
-        reservations:
-          memory: 64M
-
   nginx:
     build:
       context: .
       dockerfile: nginx-dockerfile
     image: automate-nginx:latest
     ports:
-      - "80:80"
+      - "8000:80"
     depends_on:
       - backend
+    networks:
+      - automate-net
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:80"]
@@ -184,3 +179,7 @@ services:
           memory: 256M
         reservations:
           memory: 128M
+networks:
+  automate-net:
+    driver: bridge
+    name: automate-net

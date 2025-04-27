@@ -9,11 +9,11 @@ const CONSUMER_TOPIC = process.env.KAFKA_CONSUMER_TOPIC || "execution";
 const MAX_CONCURRENT_EXECUTIONS = 5; // Max 5 executions at a time
 
 const kafka = new Kafka({
-  clientId: "example-consumer",
-  brokers: ["localhost:9092"],
+  clientId: `${process.env.KAFKA_CLIENT_ID}`,
+  brokers: [`${process.env.KAFKA_BROKERCONNECT}`],
 });
 
-const consumer = kafka.consumer({ groupId: "example-group" });
+const consumer = kafka.consumer({ groupId: `${process.env.KAFKA_GROUP_ID}` });
 const executionManager = new ExecutionManager(MAX_CONCURRENT_EXECUTIONS); // Execution manager with 5 slots
 
 async function runConsumer() {

@@ -1,13 +1,14 @@
+import dotenv from "dotenv";
+dotenv.config();
 import { Kafka, Producer } from "kafkajs";
 
 let producer: Producer;
 
 export const PRODUCER_KEY = "create-execution";
-const Broker = process.env.KAFKA_BROKER || "localhost:9092";
-const GroupId = process.env.KAFKA_GROUP_ID || "my-group";
-const ClientId = process.env.KAFKA_CLIENT_ID || "my-app";
 
 export const initializeKafka = async (): Promise<void> => {
+  const Broker = process.env.KAFKA_BROKERCONNECT ?? "kafka1:19092";
+  const ClientId = process.env.KAFKA_CLIENT_ID ?? "my-app";
   const kafka = new Kafka({
     clientId: ClientId,
     brokers: [Broker],

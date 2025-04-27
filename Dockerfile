@@ -28,6 +28,5 @@ ENV NODE_ENV=production
 COPY --from=build /app/workers/ts-executor/dist ./dist
 COPY --from=build /app/workers/ts-executor/node_modules ./node_modules
 COPY --from=build /app/backend/node_modules/.prisma ./node_modules/.prisma
-COPY workers/ts-executor/.env .env  
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/workers/ts-executor/index.js"]
