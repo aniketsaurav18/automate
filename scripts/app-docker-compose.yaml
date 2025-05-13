@@ -32,7 +32,7 @@ services:
   ts-executor:
     build:
       context: ../
-      dockerfile: Dockerfile
+      dockerfile: workers/ts-executor/Dockerfile
     image: automate-ts-executor:latest
     env_file:
       - ../workers/ts-executor/.env

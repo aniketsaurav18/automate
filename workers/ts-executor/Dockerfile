@@ -1,33 +1,32 @@
 # ---- Build Stage ----
 FROM node:20-alpine AS build
-
-# First copy only what's needed for dependencies
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
 
-# Copy backend as a dependency (only what's needed for types)
-COPY ../../backend/package.json ./backend/
-COPY ../../backend/prisma ./backend/prisma
-COPY ../../backend/tsconfig.json ./backend/
+# 1. Copy only package files first for better caching
+COPY workers/ts-executor/package*.json ./
+RUN npm install
+
+# 2. Copy backend as a dependency
+COPY backend/package.json ./backend/
+COPY backend/prisma ./backend/prisma
+COPY backend/tsconfig.json ./backend/
 RUN cd backend && npm install --only=dev && npx prisma generate
 
-# Now copy the rest of the application
-COPY ../../backend/src ./backend/src
-COPY . .
+# 3. Copy remaining source files
+COPY backend/src ./backend/src
+COPY workers/ts-executor ./workers/ts-executor
 
-# Build the application
-RUN npm run build
+# 4. Build the application
+RUN cd workers/ts-executor && npm run build
 
 # ---- Production Stage ----
 FROM node:20-alpine
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Copy built files and production dependencies
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/node_modules ./node_modules
+# Copy only necessary production files
+COPY --from=build /app/workers/ts-executor/dist ./dist
+COPY --from=build /app/workers/ts-executor/node_modules ./node_modules
 COPY --from=build /app/backend/node_modules/.prisma ./node_modules/.prisma
-COPY .env .
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/workers/ts-executor/index.js"]
