@@ -1,7 +1,12 @@
 import pool, { queryDB } from ".";
 
 export async function checkDbConnection() {
-  await pool.query("SELECT 1");
+  const res = await pool.query("SELECT 1");
+  if (res.rowCount === 0) {
+    throw new Error("Failed to connect to database");
+  }
+  console.log("Database connected successfully");
+  return res;
 }
 
 export const getAllJobDataformWorkflowId = async (workflowId: string) => {

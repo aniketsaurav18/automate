@@ -3,7 +3,7 @@ dotenv.config();
 import { Kafka, EachMessagePayload } from "kafkajs";
 import Execution from "./executors";
 import ExecutionManager from "./execution-manager";
-import { getAllJobDataformWorkflowId } from "./db/functions";
+import { checkDbConnection, getAllJobDataformWorkflowId } from "./db/functions";
 
 const CONSUMER_TOPIC = process.env.KAFKA_CONSUMER_TOPIC || "execution";
 const MAX_CONCURRENT_EXECUTIONS = 5; // Max 5 executions at a time
@@ -61,5 +61,20 @@ async function runConsumer() {
   }
 }
 
+async function checkKafkaConnection() {
+  const admin = kafka.admin();
+  await admin.connect();
+  await admin.listTopics();
+  await admin.disconnect();
+}
+
 // Start consumer
-runConsumer().catch((error) => console.error("Fatal Error:", error));
+async function main() {
+  await checkDbConnection();
+  console.log("Database connected successfully");
+  await checkKafkaConnection();
+  console.log("Kafka connected successfully");
+  await runConsumer();
+}
+
+main().catch((error) => console.error("Fatal Error:", error));

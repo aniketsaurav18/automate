@@ -116,7 +116,7 @@ services:
       - "29092:29092"
       - "9999:9999"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:19092,EXTERNAL://${DOSTAGE_IP:-kafka1}:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka1:19092,EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:19092,EXTERNAL://0.0.0.0:9092
@@ -155,30 +155,6 @@ services:
         reservations:
           memory: 1G
 
-  nginx:
-    build:
-      context: .
-      dockerfile: nginx-dockerfile
-    image: automate-nginx:latest
-    ports:
-      - "8000:80"
-    depends_on:
-      - backend
-    networks:
-      - automate-net
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80"]
-      interval: 30s
-      timeout: 5s
-      retries: 3
-    deploy:
-      resources:
-        limits:
-          cpus: "0.25"
-          memory: 256M
-        reservations:
-          memory: 128M
 networks:
   automate-net:
     driver: bridge
