@@ -1,8 +1,23 @@
-import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
-import { format } from "date-fns";
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+  useRef,
+} from "react";
+import {
+  format,
+  isValid,
+  parse,
+  getYear,
+  getMonth,
+  getDate,
+  setYear,
+  setMonth,
+  setDate,
+} from "date-fns";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -19,8 +34,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { JobDataType } from "@/types";
-import { CalendarIcon, Clock } from "lucide-react";
-
+import { CalendarIcon, Clock, ChevronDown } from "lucide-react";
 export type ScheduleJobDataType = Extract<JobDataType, { key: "schedule" }>;
 
 interface ScheduleConfigProps {
@@ -30,13 +44,104 @@ interface ScheduleConfigProps {
 export const ScheduleConfig = forwardRef(
   ({ jobData }: ScheduleConfigProps, ref) => {
     const [isDateTimeMode, setIsDateTimeMode] = useState<boolean>(true);
-    const [date, setDate] = useState<Date>();
+    const [date, setDate] = useState<Date | undefined>(new Date());
     const [time, setTime] = useState<string>("12:00");
     const [timezone, setTimezone] = useState<string>("Z");
     const [intervalType, setIntervalType] = useState<
       "min" | "hour" | "day" | "week" | "month"
     >("min");
     const [intervalAmount, setIntervalAmount] = useState<number>(10);
+
+    // Dropdown states
+    const [isYearOpen, setIsYearOpen] = useState(false);
+    const [isMonthOpen, setIsMonthOpen] = useState(false);
+    const [isDayOpen, setIsDayOpen] = useState(false);
+    const yearRef = useRef<HTMLDivElement>(null);
+    const monthRef = useRef<HTMLDivElement>(null);
+    const dayRef = useRef<HTMLDivElement>(null);
+
+    // Generate arrays for year, month, and day options
+    const currentYear = new Date().getFullYear();
+    const years = Array.from(
+      { length: 2100 - currentYear + 1 },
+      (_, i) => currentYear + i
+    );
+    const months = Array.from({ length: 12 }, (_, i) => ({
+      value: i,
+      label: format(new Date(2000, i, 1), "MMMM"),
+    }));
+
+    // Get days in the selected month
+    const getDaysInMonth = (year: number, month: number) => {
+      return new Date(year, month + 1, 0).getDate();
+    };
+
+    const days = date
+      ? Array.from(
+          { length: getDaysInMonth(getYear(date), getMonth(date)) },
+          (_, i) => i + 1
+        )
+      : [];
+
+    // Close dropdowns when clicking outside
+    useEffect(() => {
+      const handleClickOutside = (event: MouseEvent) => {
+        if (
+          yearRef.current &&
+          !yearRef.current.contains(event.target as Node)
+        ) {
+          setIsYearOpen(false);
+        }
+        if (
+          monthRef.current &&
+          !monthRef.current.contains(event.target as Node)
+        ) {
+          setIsMonthOpen(false);
+        }
+        if (dayRef.current && !dayRef.current.contains(event.target as Node)) {
+          setIsDayOpen(false);
+        }
+      };
+
+      document.addEventListener("mousedown", handleClickOutside);
+      return () =>
+        document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const handleYearChange = (year: number) => {
+      if (date) {
+        const newDate = new Date(date);
+        newDate.setFullYear(year);
+        setDate(newDate);
+        setIsYearOpen(false);
+      }
+    };
+
+    const handleMonthChange = (month: number) => {
+      if (date) {
+        const newDate = new Date(date);
+        newDate.setMonth(month);
+        // Adjust day if it's invalid for the new month
+        const daysInMonth = getDaysInMonth(
+          newDate.getFullYear(),
+          newDate.getMonth()
+        );
+        if (newDate.getDate() > daysInMonth) {
+          newDate.setDate(daysInMonth);
+        }
+        setDate(newDate);
+        setIsMonthOpen(false);
+      }
+    };
+
+    const handleDayChange = (day: number) => {
+      if (date) {
+        const newDate = new Date(date);
+        newDate.setDate(day);
+        setDate(newDate);
+        setIsDayOpen(false);
+      }
+    };
 
     // Parse the ISO string on load
     useEffect(() => {
@@ -114,28 +219,94 @@ export const ScheduleConfig = forwardRef(
             <div className="flex flex-row gap-6">
               <div className="space-y-2 flex-1">
                 <Label>Date</Label>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"outline"}
-                      className={cn(
-                        "w-full justify-start text-left font-normal",
-                        !date && "text-muted-foreground"
+                <div className="grid gap-4">
+                  <div className="grid grid-cols-3 gap-2">
+                    {/* Year Dropdown */}
+                    <div className="relative" ref={yearRef}>
+                      <button
+                        onClick={() => setIsYearOpen(!isYearOpen)}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background hover:bg-accent"
+                      >
+                        <span>{date ? getYear(date) : "Year"}</span>
+                        <ChevronDown className="h-4 w-4 opacity-50" />
+                      </button>
+                      {isYearOpen && (
+                        <div className="absolute z-50 w-full mt-1 bg-popover border rounded-md shadow-lg max-h-[200px] overflow-y-auto">
+                          {years.map((year) => (
+                            <button
+                              key={year}
+                              onClick={() => handleYearChange(year)}
+                              className={cn(
+                                "w-full px-3 py-2 text-sm text-left hover:bg-accent",
+                                date && getYear(date) === year && "bg-accent"
+                              )}
+                            >
+                              {year}
+                            </button>
+                          ))}
+                        </div>
                       )}
-                    >
-                      <CalendarIcon className="mr-2 h-4 w-4" />
-                      {date ? format(date, "PPP") : <span>Pick a date</span>}
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={date}
-                      onSelect={setDate}
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
+                    </div>
+
+                    {/* Month Dropdown */}
+                    <div className="relative" ref={monthRef}>
+                      <button
+                        onClick={() => setIsMonthOpen(!isMonthOpen)}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background hover:bg-accent"
+                      >
+                        <span>
+                          {date ? months[getMonth(date)].label : "Month"}
+                        </span>
+                        <ChevronDown className="h-4 w-4 opacity-50" />
+                      </button>
+                      {isMonthOpen && (
+                        <div className="absolute z-50 w-full mt-1 bg-popover border rounded-md shadow-lg max-h-[200px] overflow-y-auto">
+                          {months.map((month) => (
+                            <button
+                              key={month.value}
+                              onClick={() => handleMonthChange(month.value)}
+                              className={cn(
+                                "w-full px-3 py-2 text-sm text-left hover:bg-accent",
+                                date &&
+                                  getMonth(date) === month.value &&
+                                  "bg-accent"
+                              )}
+                            >
+                              {month.label}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Day Dropdown */}
+                    <div className="relative" ref={dayRef}>
+                      <button
+                        onClick={() => setIsDayOpen(!isDayOpen)}
+                        className="w-full flex items-center justify-between px-3 py-2 text-sm border rounded-md bg-background hover:bg-accent"
+                      >
+                        <span>{date ? getDate(date) : "Day"}</span>
+                        <ChevronDown className="h-4 w-4 opacity-50" />
+                      </button>
+                      {isDayOpen && (
+                        <div className="absolute z-50 w-full mt-1 bg-popover border rounded-md shadow-lg max-h-[200px] overflow-y-auto">
+                          {days.map((day) => (
+                            <button
+                              key={day}
+                              onClick={() => handleDayChange(day)}
+                              className={cn(
+                                "w-full px-3 py-2 text-sm text-left hover:bg-accent",
+                                date && getDate(date) === day && "bg-accent"
+                              )}
+                            >
+                              {day}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="space-y-2">
@@ -180,7 +351,7 @@ export const ScheduleConfig = forwardRef(
             </div>
           </>
         ) : (
-          <>
+          <div>
             <div className="space-y-2">
               <Label htmlFor="interval-type">Interval Type</Label>
               <Select
@@ -218,7 +389,7 @@ export const ScheduleConfig = forwardRef(
                 className="w-full"
               />
             </div>
-          </>
+          </div>
         )}
       </div>
     );

@@ -8,8 +8,8 @@ services:
     image: automate-backend:latest
     env_file:
       - ../backend/.env
-    expose:
-      - "4000"
+    ports:
+      - "4000:4000"
     depends_on:
       - kafka1
       - zoo1
