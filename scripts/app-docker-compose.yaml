@@ -9,7 +9,7 @@ services:
     env_file:
       - ../backend/.env
     ports:
-      - "4000:4000"
+      - "8989:3000"
     depends_on:
       - kafka1
       - zoo1
@@ -17,7 +17,7 @@ services:
     networks:
       - automate-net
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
