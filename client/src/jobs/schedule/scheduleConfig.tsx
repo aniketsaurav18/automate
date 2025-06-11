@@ -5,24 +5,8 @@ import {
   useState,
   useRef,
 } from "react";
-import {
-  format,
-  isValid,
-  parse,
-  getYear,
-  getMonth,
-  getDate,
-  setYear,
-  setMonth,
-  setDate,
-} from "date-fns";
+import { format, getYear, getMonth, getDate } from "date-fns";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -34,7 +18,7 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { JobDataType } from "@/types";
-import { CalendarIcon, Clock, ChevronDown } from "lucide-react";
+import { Clock, ChevronDown } from "lucide-react";
 export type ScheduleJobDataType = Extract<JobDataType, { key: "schedule" }>;
 
 interface ScheduleConfigProps {
